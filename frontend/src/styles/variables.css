@@ -1,0 +1,18 @@
+:root {
+  --bg-primary: #0B0B0C;
+  --bg-secondary: #101112;
+  --surface: #151617;
+  --surface-hover: #18191A;
+  --border: #29292B;
+  --border-light: #3a3a3d;
+  --text-primary: #F2F0F2;
+  --text-secondary: #A5A2A6;
+  --accent: #D9A8B8;
+  --accent-light: #E6B7C7;
+  --accent-secondary: #9F8FB0;
+  --success: #34d399;
+  --warning: #fbbf24;
+  --danger: #f87171;
+
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}

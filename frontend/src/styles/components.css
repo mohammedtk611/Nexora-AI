@@ -1,0 +1,178 @@
+/* Cards */
+.editorial-card {
+  background-color: rgba(21, 22, 23, 0.85);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.65rem;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.3s ease,
+              background-color 0.3s ease,
+              box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}
+
+.editorial-card:hover {
+  border-color: rgba(217, 168, 184, 0.42);
+  background-color: rgba(24, 25, 26, 0.94);
+  transform: translate3d(0, -5px, 0);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55), 0 0 24px rgba(217, 168, 184, 0.1);
+}
+
+.editorial-card-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.editorial-card-desc {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+.editorial-card-step-num {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--accent);
+  opacity: 0.85;
+  letter-spacing: -0.02em;
+  font-family: var(--font-mono, monospace);
+  text-shadow: 0 0 20px rgba(217, 168, 184, 0.25);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              color 0.3s ease,
+              opacity 0.3s ease,
+              text-shadow 0.3s ease;
+  user-select: none;
+}
+
+.editorial-card:hover .editorial-card-step-num {
+  color: var(--accent-light);
+  opacity: 1;
+  transform: scale(1.08) translateY(-2px);
+  text-shadow: 0 0 28px rgba(217, 168, 184, 0.5);
+}
+
+.editorial-card-icon {
+  color: var(--accent);
+  margin-bottom: 1rem;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
+}
+
+.editorial-card:hover .editorial-card-icon {
+  transform: scale(1.1) translateY(-2px);
+  color: var(--accent-light);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  gap: 0.5rem;
+  border: 1px solid transparent;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background-color: var(--accent);
+  color: #0B0B0C;
+  font-weight: 600;
+  box-shadow: 0 4px 14px rgba(217, 168, 184, 0.2);
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-light);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(217, 168, 184, 0.35);
+}
+
+.btn-primary svg {
+  transition: transform 0.2s ease;
+}
+
+.btn-primary:hover svg {
+  transform: translateX(3px);
+}
+
+.btn-secondary {
+  background-color: var(--surface);
+  color: var(--text-primary);
+  border-color: var(--border);
+}
+
+.btn-secondary:hover {
+  background-color: var(--surface-hover);
+  border-color: rgba(217, 168, 184, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+/* Texture overlay for subtle dotted grid (optional, as per prompt) */
+.texture-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  background-image: radial-gradient(var(--border) 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: 0.2;
+}
+
+/* Inputs & Form Elements */
+.input {
+  display: flex;
+  height: 2.5rem;
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background-color: var(--bg-primary);
+  padding: 0.5rem 0.85rem;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+}
+
+.input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.input::placeholder {
+  color: var(--text-secondary);
+}
+
+select.input {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23A5A2A6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+  padding-right: 2.25rem;
+}
+
+select.input option {
+  background-color: var(--surface);
+  color: var(--text-primary);
+}

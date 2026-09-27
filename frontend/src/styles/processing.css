@@ -1,0 +1,61 @@
+/* Processing Pipeline */
+.pipeline-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+.pipeline-stage {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  border-left: 2px solid var(--border);
+  position: relative;
+}
+
+.pipeline-stage::before {
+  content: '';
+  position: absolute;
+  left: -9px;
+  top: 1.5rem;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--bg-primary);
+  border: 2px solid var(--border-light);
+}
+
+.pipeline-stage.active {
+  border-left-color: var(--accent);
+}
+
+.pipeline-stage.active::before {
+  border-color: var(--accent);
+  background: var(--accent);
+  box-shadow: 0 0 0 4px rgba(217, 168, 184, 0.2);
+}
+
+.pipeline-stage.completed {
+  border-left-color: var(--success);
+}
+
+.pipeline-stage.completed::before {
+  border-color: var(--success);
+  background: var(--success);
+}
+
+.stage-content {
+  flex: 1;
+}
+
+.stage-title {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.stage-desc {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}

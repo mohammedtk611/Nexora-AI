@@ -1,0 +1,30 @@
+SECURITY ADVISORY FORMATTING TEMPLATE STANDARD
+================================================================================
+DOCUMENT CLASS: OUTPUT TEMPLATE STANDARD
+
+[ADVISORY HEADER]
+TITLE: Security Advisory: [INCIDENT ID] - [BRIEF THREAT DESCRIPTION]
+SEVERITY: [CRITICAL | HIGH | MEDIUM | LOW]
+CVSS SCORE: [0.0 - 10.0]
+DATE ISSUED: [YYYY-MM-DD]
+
+[SECTION 1: OVERVIEW & IMPACT]
+- Executive Summary of the vulnerability or threat event.
+- Business and operational risk statement.
+
+[SECTION 2: TECHNICAL DETAILS & IOCS]
+- Vulnerability ID (CVE): [CVE-XXXX-XXXX]
+- Affected Endpoint / System: [SYSTEM NAME / IP]
+- Threat Actor: [THREAT ACTOR TAG]
+- Indicators of Compromise:
+  * Malicious Source IPs
+  * File / Payload Hashes (SHA256)
+  * User-Agents / Headers
+
+[SECTION 3: RECOMMENDED MITIGATIONS]
+- Actionable step-by-step remediation commands and patching instructions.
+- Workarounds and rate-limiting enforcement.
+
+[SECTION 4: GOVERNANCE & REFERENCES]
+- MITRE ATT&CK Technique IDs
+- NIST SP 800-61 Rev 2 Alignment

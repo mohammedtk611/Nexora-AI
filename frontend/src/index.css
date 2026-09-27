@@ -1,0 +1,31 @@
+@import './styles/variables.css';
+@import './styles/global.css';
+@import './styles/layout.css';
+@import './styles/components.css';
+@import './styles/home.css';
+@import './styles/transform.css';
+@import './styles/processing.css';
+@import './styles/results.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 240 5% 4%;
+    --foreground: 300 5% 95%;
+    --card: 240 4% 8%;
+    --card-foreground: 300 5% 95%;
+    --popover: 240 4% 8%;
+    --popover-foreground: 300 5% 95%;
+    --primary: 341 40% 75%;
+    --primary-foreground: 240 5% 4%;
+    --secondary: 240 4% 12%;
+    --secondary-foreground: 300 5% 95%;
+    --muted: 240 4% 16%;
+    --muted-foreground: 240 5% 65%;
+    --destructive: 0 62.8% 50.6%;
+    --destructive-foreground: 210 40% 98%;
+  }
+}

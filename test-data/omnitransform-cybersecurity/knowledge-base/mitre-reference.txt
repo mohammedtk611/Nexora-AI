@@ -1,0 +1,20 @@
+MITRE ATT&CK KNOWLEDGE BASE REFERENCE DOCUMENT
+================================================================================
+DOCUMENT CLASS: GROUNDING REFERENCE CORPUS
+PURPOSE: Technical mapping and tactic categorization for Automated Security Advisory Generation.
+
+1. TECHNIQUE T1068: Exploitation for Privilege Escalation
+--------------------------------------------------------------------------------
+- Description: Adversaries may exploit software vulnerabilities in an effort to elevate privileges from a lower-level account to administrative or root-level permissions.
+- Detection: Monitor API endpoint logs for unexpected HTTP 200 OK responses accompanied by unauthorized administrative token generation or parameter mutation.
+- Mitigation M1050: Software Modification. Patch affected endpoints, enforce input validation routines, and mandate strict schema compliance on all incoming session payload parameters.
+
+2. TECHNIQUE T1190: Exploit Public-Facing Application
+--------------------------------------------------------------------------------
+- Description: Adversaries may attempt to take advantage of a weakness in an Internet-facing application or API to execute unauthorized code or bypass access controls.
+- Mitigation M1026: Privileged Account Management & Rate Limiting. Enforce strict API rate limiting (e.g., maximum 10 requests per minute per IP address) and isolate authentication boundary services.
+
+3. MITRE DEFEND ALIGNMENT
+--------------------------------------------------------------------------------
+- D3-AL: Application Hardening (Enforce schema validation on HTTP headers).
+- D3-NBA: Network Traffic Filtering (Blacklist suspicious IP addresses at the perimeter).
