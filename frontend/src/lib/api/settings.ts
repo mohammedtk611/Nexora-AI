@@ -5,7 +5,7 @@ export const settingsApi = {
   get: async (): Promise<Settings> => {
     if (API_MODE === 'mock') {
       return {
-        app_name: 'Revamp AI',
+        app_name: 'Nexora',
         environment: 'development',
         llm_provider: 'gemini',
         gemini_model: 'gemini-2.5-flash',
@@ -21,7 +21,7 @@ export const settingsApi = {
       return await apiFetch<Settings>('/settings');
     } catch {
       return {
-        app_name: 'Revamp AI',
+        app_name: 'Nexora',
         environment: 'development',
         llm_provider: 'gemini',
         gemini_model: 'gemini-2.5-flash',

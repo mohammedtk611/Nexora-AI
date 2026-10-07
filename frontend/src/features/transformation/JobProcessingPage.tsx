@@ -123,7 +123,7 @@ export function JobProcessingPage({ jobId, onNavigate }: JobProcessingPageProps)
                   <div className="stage-content">
                     <h4 className="stage-title">{stage.label}</h4>
                     {isActive && (
-                      <div className="flex items-center text-xs text-accent mt-1">
+                      <div className="flex items-center text-xs text-success mt-1">
                         <Activity className="w-3 h-3 mr-1 animate-pulse" /> Processing...
                       </div>
                     )}

@@ -1,0 +1,10 @@
+Title: Ransomware Incident Notes (LockBit 4.0)
+Status: Contained
+Incident Manager: Jane Doe
+
+Notes:
+- 08:00 AM: SOC alerts triggered for massive file encryption on Fileserver-04.
+- 08:15 AM: Incident response team isolated Fileserver-04 and Fileserver-05 from the network.
+- 08:45 AM: Ransom note identified as LockBit 4.0 variant. Extortion demand received but not engaged.
+- 09:30 AM: Initial vector identified as compromised VPN credentials of an external contractor. 
+- 10:00 AM: Started restoration of Fileserver-04 from immutable backups (timestamp: T-12 hours). No data exfiltration detected in DLP logs so far.

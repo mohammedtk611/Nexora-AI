@@ -10,7 +10,7 @@ export function Footer({ onNavigate, isHome }: FooterProps) {
     <footer className={`footer ${isHome ? 'footer-home' : ''}`}>
       <div className="footer-section">
         <div className="nav-brand mb-1">
-          <span className="nav-brand-title text-sm">REVAMP AI</span>
+          <span className="nav-brand-title text-sm">NEXORA</span>
           <span className="nav-brand-subtitle text-[10px] ml-1.5">SIH 154 | NTRO</span>
         </div>
         <p className={`text-[11px] max-w-[210px] leading-relaxed ${isHome ? 'text-slate-300' : 'text-slate-400'}`}>
@@ -65,7 +65,7 @@ export function Footer({ onNavigate, isHome }: FooterProps) {
           </li>
           <li className={`footer-item text-[11px] ${isHome ? 'text-slate-300' : 'text-slate-400'}`}>
             <span className="footer-bullet">•</span>
-            <span>© 2026 Revamp AI</span>
+            <span>© 2026 Nexora</span>
           </li>
         </ul>
       </div>

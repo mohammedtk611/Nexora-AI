@@ -46,7 +46,7 @@ export const AppContent: React.FC = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-bg-primary flex items-center justify-center font-mono text-xs text-accent">
-        Initializing Revamp AI Platform Session...
+        Initializing Nexora Platform Session...
       </div>
     );
   }

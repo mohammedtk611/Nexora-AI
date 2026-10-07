@@ -31,9 +31,8 @@ export function Header({ currentRoute, onNavigate }: HeaderProps) {
   return (
     <header className="top-nav">
       <div className="top-nav-left">
-        <div className="nav-brand cursor-pointer" onClick={() => handleNav('/')}>
-          <span className="nav-brand-title">REVAMP AI</span>
-          <span className="nav-brand-subtitle">SIH 154 | NTRO</span>
+        <div className="nav-brand cursor-pointer flex items-center" onClick={() => handleNav('/')}>
+          <img src="/nexora_banner.png" alt="Nexora Logo" className="h-10 w-auto object-contain" />
         </div>
       </div>
 

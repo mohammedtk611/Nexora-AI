@@ -98,12 +98,12 @@ class LLMService:
             logger.info("Gemini API key not configured, falling back to simulated output.")
             return self._simulated_response(prompt, system_prompt)
 
-        try:
+        def _attempt_call(target_model: str) -> str:
             try:
                 from google import genai
                 client = genai.Client(api_key=key)
                 response = client.models.generate_content(
-                    model=model_name,
+                    model=target_model,
                     contents=prompt
                 )
                 return response.text
@@ -111,13 +111,22 @@ class LLMService:
                 import google.generativeai as genai
                 genai.configure(api_key=key)
                 model = genai.GenerativeModel(
-                    model_name=model_name,
+                    model_name=target_model,
                     system_instruction=system_prompt
                 )
                 response = model.generate_content(prompt)
                 return response.text
+
+        try:
+            return _attempt_call(model_name)
         except Exception as e:
-            logger.error(f"Gemini API call failed: {e}")
+            logger.error(f"Gemini API call failed for {model_name}: {e}")
+            if not use_fast_model and self.gemini_fast_model and self.gemini_fast_model != model_name:
+                logger.info(f"Falling back to fast model: {self.gemini_fast_model}")
+                try:
+                    return _attempt_call(self.gemini_fast_model)
+                except Exception as fallback_e:
+                    logger.error(f"Fallback to {self.gemini_fast_model} also failed: {fallback_e}")
             return self._simulated_response(prompt, system_prompt)
 
 

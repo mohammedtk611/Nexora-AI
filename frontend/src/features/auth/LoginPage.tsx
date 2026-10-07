@@ -32,7 +32,7 @@ export function LoginPage({ onLoginSuccess }: LoginPageProps) {
           <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-accent text-dark-950 font-bold shadow-lg border border-accent-light/40 mb-2">
             <Shield className="h-7 w-7" />
           </div>
-          <h1 className="text-xl font-bold tracking-wider text-slate-100 uppercase">REVAMP AI</h1>
+          <h1 className="text-xl font-bold tracking-wider text-slate-100 uppercase">NEXORA</h1>
           <p className="text-xs text-slate-400 max-w-sm">
             Automated Cybersecurity Intelligence & Content Transformation Engine
           </p>

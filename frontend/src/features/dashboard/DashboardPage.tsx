@@ -20,7 +20,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
       <div className="hero-wave-canvas-container">
         <ScrollWaveField
           background="transparent"
-          colors={["#5A4AE0", "#D9A8B8", "#F2D98A", "#8B5CF6"]}
+          colors={["#D98FA5", "#F0A6B8", "#B85F7A", "#FFB6C8", "#F5F2F0", "#E9B96E"]}
           density={160}
           dotSize={2.2}
           scatter={90}
@@ -43,14 +43,14 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
       {/* Hero Section */}
       <section className="home-hero texture-overlay-relative w-full">
         <div className="texture-overlay"></div>
-        <div className="hero-content-overlay">
+        <div className="hero-content-overlay relative -top-[15px]">
           <span className="home-hero-label animate-fade-up stagger-1">SIH 154 | NTRO</span>
           <h1 className="home-hero-title animate-fade-up stagger-2">
             Turn raw information <br /> into actionable intelligence.
           </h1>
           <p className="home-hero-desc animate-fade-up stagger-3">
             Upload documents, images, audio, video, or other source material. 
-            Revamp AI analyzes the information, understands its context, 
+            Nexora analyzes the information, understands its context, 
             and transforms it into structured, audience-ready deliverables.
           </p>
           <div className="home-hero-actions animate-fade-up stagger-4">
@@ -93,7 +93,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
               </div>
               <h3 className="editorial-card-title mt-2">Understand the information</h3>
               <p className="editorial-card-desc">
-                Revamp AI extracts relevant content, entities, topics and context.
+                Nexora extracts relevant content, entities, topics and context.
               </p>
             </div>
             <div className="editorial-card scroll-reveal stagger-3">
@@ -183,7 +183,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
       <section className="home-section border-t border-border mt-8 text-center scroll-reveal">
         <h2 className="text-3xl font-bold mb-4">Ready to transform your information?</h2>
         <p className="text-slate-400 mb-8 max-w-xl mx-auto">
-          Upload a source, choose what you need, and let Revamp AI handle the transformation.
+          Upload a source, choose what you need, and let Nexora handle the transformation.
         </p>
         <div className="home-hero-actions">
           <button className="btn btn-primary" onClick={() => onNavigate('/transform/new')}>

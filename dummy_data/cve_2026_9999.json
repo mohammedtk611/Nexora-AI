@@ -1,0 +1,13 @@
+{
+  "cve_id": "CVE-2026-9999",
+  "severity": "CRITICAL",
+  "cvss_score": 9.8,
+  "description": "A critical remote code execution (RCE) vulnerability exists in the GlobalProtect VPN portal of Palo Alto Networks PAN-OS. An unauthenticated attacker can exploit this by sending a specially crafted request to the portal, leading to root-level access on the firewall device.",
+  "affected_versions": [
+    "PAN-OS 10.2 < 10.2.9",
+    "PAN-OS 11.0 < 11.0.4",
+    "PAN-OS 11.1 < 11.1.2"
+  ],
+  "remediation": "Apply the latest security patches immediately. As a temporary workaround, disable telemetry and apply Threat Prevention signature 99999 if active.",
+  "published_date": "2026-10-05"
+}
