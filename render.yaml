@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: revamp-ai-backend
+    env: docker
+    region: oregon # or frankfurt, ohio, singapore
+    plan: free # Change to starter/standard for production
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/v1/health # Standard healthcheck path, assuming /api/v1/health exists
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: revamp-ai-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: revamp-ai-redis
+          property: connectionString
+      - key: ALLOWED_ORIGINS
+        value: "https://your-vercel-frontend.vercel.app" # UPDATE THIS with your actual vercel URL after deployment
+      - key: SECRET_KEY
+        generateValue: true
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      
+  - type: redis
+    name: revamp-ai-redis
+    region: oregon
+    plan: free # Change for production
+    ipAllowList: [] # Allows internal connections only by default
+
+databases:
+  - name: revamp-ai-db
+    databaseName: revamp_ai
+    user: revamp_ai_user
+    region: oregon
+    plan: free # Change for production
