@@ -11,7 +11,7 @@ interface LoginPageProps {
 
 export function LoginPage({ onLoginSuccess }: LoginPageProps) {
   const { login, isLoading, error } = useAuthStore();
-  const [email, setEmail] = useState('admin@revamp.ai');
+  const [email, setEmail] = useState('admin@nexora.ai');
   const [password, setPassword] = useState('AdminPass123!');
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -63,7 +63,7 @@ export function LoginPage({ onLoginSuccess }: LoginPageProps) {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@revamp.ai"
+                  placeholder="admin@nexora.ai"
                   required
                 />
               </div>
@@ -89,7 +89,7 @@ export function LoginPage({ onLoginSuccess }: LoginPageProps) {
         {/* Demo Credentials Note */}
         <div className="p-3 rounded-md bg-dark-900 border border-dark-800 text-center">
           <p className="text-[11px] text-slate-400">
-            Demo Operator Credentials: <span className="text-accent font-mono">admin@revamp.ai</span> / <span className="text-accent font-mono">AdminPass123!</span>
+            Demo Operator Credentials: <span className="text-accent font-mono">admin@nexora.ai</span> / <span className="text-accent font-mono">AdminPass123!</span>
           </p>
         </div>
       </div>

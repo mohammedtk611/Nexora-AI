@@ -28,11 +28,11 @@ class Settings(BaseSettings):
     # Vector Database
     QDRANT_URL: str = "http://localhost:6333"
     QDRANT_API_KEY: Optional[str] = None
-    QDRANT_COLLECTION: str = "revamp_kb"
+    QDRANT_COLLECTION: str = "nexora_kb"
 
     # Database
-    DATABASE_URL: str = "sqlite:///./storage/revamp_ai.db"
-    # Can also be PostgreSQL URL e.g. postgresql://postgres:postgres@localhost:5432/revamp_ai
+    DATABASE_URL: str = "sqlite:///./storage/nexora_ai.db"
+    # Can also be PostgreSQL URL e.g. postgresql://postgres:postgres@localhost:5432/nexora_ai
 
     # Redis & Celery
     REDIS_URL: str = "redis://:redispassword@localhost:6379/0"

@@ -41,11 +41,11 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   initialize: async () => {
-    const token = localStorage.getItem('revamp_ai_jwt');
+    const token = localStorage.getItem('nexora_ai_jwt');
     if (!token) {
       // Auto-login to bypass login screen
       try {
-        await authApi.login('admin@revamp.ai', 'AdminPass123!');
+        await authApi.login('admin@nexora.ai', 'AdminPass123!');
         const user = await authApi.me();
         set({ user, isAuthenticated: true, isLoading: false });
         return;
@@ -59,7 +59,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       const user = await authApi.me();
       set({ user, isAuthenticated: true, isLoading: false });
     } catch {
-      localStorage.removeItem('revamp_ai_jwt');
+      localStorage.removeItem('nexora_ai_jwt');
       set({ user: null, isAuthenticated: false, isLoading: false });
     }
   },

@@ -17,17 +17,17 @@ def get_current_user(
     if not credentials or not credentials.credentials:
         # For development / testing, create or return default admin user if no token provided
         try:
-            default_user = db.query(User).filter(User.email == "admin@revamp.ai").first()
+            default_user = db.query(User).filter(User.email == "admin@nexora.ai").first()
         except Exception:
             from app.db.database import Base
             if db.bind:
                 Base.metadata.create_all(bind=db.bind)
             db.rollback()
-            default_user = db.query(User).filter(User.email == "admin@revamp.ai").first()
+            default_user = db.query(User).filter(User.email == "admin@nexora.ai").first()
 
         if not default_user:
             from app.services.auth_service import auth_service
-            default_user = auth_service.register_user(db, "admin@revamp.ai", "AdminPass123!", "Default Admin")
+            default_user = auth_service.register_user(db, "admin@nexora.ai", "AdminPass123!", "Default Admin")
         return default_user
 
     token = credentials.credentials

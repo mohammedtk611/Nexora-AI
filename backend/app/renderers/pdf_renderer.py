@@ -28,7 +28,7 @@ ADVISORY_HTML_TEMPLATE = """
     <div class="header">
         <span class="badge {{ severity | lower }}">{{ severity }} SEVERITY</span>
         <h1>{{ title }}</h1>
-        <div class="meta">Target Audience: {{ target_audience }} | Prepared by: Revamp AI Intelligence Agent</div>
+        <div class="meta">Target Audience: {{ target_audience }} | Prepared by: Nexora AI Intelligence Agent</div>
     </div>
 
     <div class="section">

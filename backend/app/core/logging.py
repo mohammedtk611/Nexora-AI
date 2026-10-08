@@ -18,4 +18,4 @@ def setup_logging():
     logging.getLogger("httpx").setLevel(logging.WARNING)
     logging.getLogger("pdfminer").setLevel(logging.WARNING)
 
-logger = logging.getLogger("revamp_ai")
+logger = logging.getLogger("nexora_ai")

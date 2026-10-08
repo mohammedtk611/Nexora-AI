@@ -1,5 +1,5 @@
 // Line Ripple Background — Originkit
-// Revamp AI Theme Adapted Component
+// Nexora AI Theme Adapted Component
 
 "use client";
 

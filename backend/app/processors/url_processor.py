@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 class URLProcessor:
     def process_url(self, url: str, title: str = None) -> Dict[str, Any]:
         headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) RevampAI/1.0"
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) NexoraAI/1.0"
         }
         
         extracted_text = ""

@@ -18,7 +18,7 @@ class PPTXRenderer:
             title = slide.shapes.title
             subtitle = slide.placeholders[1]
             title.text = "Cybersecurity Intelligence Briefing"
-            subtitle.text = "Revamp AI Intelligence Report"
+            subtitle.text = "Nexora AI Intelligence Report"
 
             # Content slides
             blank_layout = prs.slide_layouts[1]

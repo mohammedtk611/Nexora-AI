@@ -20,7 +20,7 @@ export class APIClientError extends Error {
 }
 
 export async function apiFetch<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-  const token = localStorage.getItem('revamp_ai_jwt');
+  const token = localStorage.getItem('nexora_ai_jwt');
 
   const headers: Record<string, string> = {
     ...(options.headers as Record<string, string>),
@@ -53,7 +53,7 @@ export async function apiFetch<T>(endpoint: string, options: RequestInit = {}): 
       const requestId = errorData?.error?.request_id || response.headers.get('X-Request-ID') || undefined;
 
       if (response.status === 401) {
-        localStorage.removeItem('revamp_ai_jwt');
+        localStorage.removeItem('nexora_ai_jwt');
       }
 
       throw new APIClientError(code, message, response.status, details, requestId);

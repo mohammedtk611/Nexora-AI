@@ -3,7 +3,7 @@ from app.workers.celery_app import celery_app
 from app.db.database import SessionLocal
 from app.services.transformation_service import transformation_service
 
-logger = logging.getLogger("revamp_ai.celery")
+logger = logging.getLogger("nexora_ai.celery")
 
 @celery_app.task(bind=True, name="run_transformation_pipeline")
 def run_transformation_pipeline(self, transformation_id: str):

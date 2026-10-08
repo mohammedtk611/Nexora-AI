@@ -18,7 +18,7 @@ DISCLAIMER: [SYNTHETIC TEST DATA - NON-PRODUCTION BENCHMARK ONLY]
 
 [MITIGATION COMMANDS EXECUTED]
 $ iptables -A INPUT -s 198.51.100.17 -j DROP
-$ systemctl restart revamp-ai-auth-service
+$ systemctl restart nexora-ai-auth-service
 $ ./scripts/revoke_tokens.sh --node PROD-AUTH-NODE-04
 
 [REFERENCES]

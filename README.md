@@ -1,14 +1,14 @@
-# Revamp AI — SIH 2026
+# Nexora AI — SIH 2026
 
 GenAI Platform for Automated Cybersecurity Intelligence & Content Transformation
 
 Smart India Hackathon 2026 · Problem Statement 26154 · NTRO/NCIIPC
 
-Revamp AI is a multimodal, RAG-grounded and agentic AI platform that converts raw cybersecurity intelligence into consistent, audience-specific communication artifacts such as executive briefs, security advisories, social campaigns, presentations, infographics and video packages.
+Nexora AI is a multimodal, RAG-grounded and agentic AI platform that converts raw cybersecurity intelligence into consistent, audience-specific communication artifacts such as executive briefs, security advisories, social campaigns, presentations, infographics and video packages.
 
 ## 🎯 Problem & Solution
 
-Cybersecurity analysts often need to manually transform the same intelligence into multiple formats for different audiences. Revamp AI provides a unified pipeline:
+Cybersecurity analysts often need to manually transform the same intelligence into multiple formats for different audiences. Nexora AI provides a unified pipeline:
 
 ```
 Cybersecurity Input
@@ -205,8 +205,8 @@ API documentation: `http://localhost:8000/docs`
 
 ### 1. Clone
 ```bash
-git clone https://github.com/PurvaBhadange/Revamp-AI.git
-cd Revamp-AI
+git clone https://github.com/PurvaBhadange/Nexora-AI.git
+cd Nexora-AI
 ```
 
 ### 2. Configure
@@ -243,7 +243,7 @@ Authentication → Upload → Ingestion → Context → RAG → Agent Execution 
 
 ## 🔐 Security
 
-Revamp AI includes:
+Nexora AI includes:
 - JWT authentication
 - Secure password hashing
 - Input & MIME validation
@@ -261,7 +261,7 @@ Never commit `.env`, API keys or database credentials.
 - **Problem Statement**: 26154
 - **Organization**: NTRO / NCIIPC
 - **Domain**: Cybersecurity & Generative AI
-- **Solution**: Revamp AI
+- **Solution**: Nexora AI
 - **Architecture**: Multimodal + RAG + Multi-Agent
 
 *One intelligence source. One central context. Multiple consistent communication outputs.*

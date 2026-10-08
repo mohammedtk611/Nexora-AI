@@ -20,7 +20,7 @@ from app.renderers.audio_renderer import audio_renderer
 from app.renderers.video_package_renderer import video_package_renderer
 from app.storage.local_storage import storage_manager
 
-logger = logging.getLogger("revamp_ai.graph")
+logger = logging.getLogger("nexora_ai.graph")
 
 MAX_VALIDATION_RETRIES = 2
 

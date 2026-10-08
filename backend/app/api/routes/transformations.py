@@ -25,7 +25,7 @@ def _run_transformation_background(transformation_id: str):
         transformation_service.execute_transformation_sync(db, transformation_id)
     except Exception as e:
         import logging
-        logging.getLogger("revamp_ai").error(f"Background execution failed: {e}")
+        logging.getLogger("nexora_ai").error(f"Background execution failed: {e}")
     finally:
         db.close()
 

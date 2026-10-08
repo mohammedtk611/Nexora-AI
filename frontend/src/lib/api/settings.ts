@@ -13,7 +13,7 @@ export const settingsApi = {
         ollama_base_url: 'http://localhost:11434',
         ollama_model: 'llama3.1:8b',
         qdrant_url: 'http://localhost:6333',
-        qdrant_collection: 'revamp_kb',
+        qdrant_collection: 'nexora_kb',
         has_gemini_api_key: true,
       };
     }
@@ -29,7 +29,7 @@ export const settingsApi = {
         ollama_base_url: 'http://localhost:11434',
         ollama_model: 'llama3.1:8b',
         qdrant_url: 'http://localhost:6333',
-        qdrant_collection: 'revamp_kb',
+        qdrant_collection: 'nexora_kb',
         has_gemini_api_key: true,
       };
     }

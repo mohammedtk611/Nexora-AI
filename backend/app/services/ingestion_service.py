@@ -32,7 +32,7 @@ class IngestionService:
             user = db.query(User).first()
             if not user:
                 from app.services.auth_service import auth_service
-                user = auth_service.register_user(db, "admin@revamp.ai", "AdminPass123!", "Default Admin")
+                user = auth_service.register_user(db, "admin@nexora.ai", "AdminPass123!", "Default Admin")
             proj = Project(
                 id=project_id,
                 name="Cybersecurity Intelligence Project",

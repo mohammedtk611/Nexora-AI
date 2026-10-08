@@ -27,7 +27,7 @@ class ExecutiveAgent:
         exec_summary_ctx = ctx.executive_summary if ctx else ""
 
         prompt = f"""
-You are the Senior Executive Communication Agent for Revamp AI.
+You are the Senior Executive Communication Agent for Nexora AI.
 Generate a high-level, authoritative Executive Briefing Report based strictly on the Central Context below.
 
 Central Context:

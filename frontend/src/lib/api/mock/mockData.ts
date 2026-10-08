@@ -7,7 +7,7 @@ import { AuditLog } from '@/types/audit';
 
 export const mockUser: User = {
   id: 'usr_mock_001',
-  email: 'admin@revamp.ai',
+  email: 'admin@nexora.ai',
   full_name: 'Senior Threat Analyst',
   role: 'analyst',
   is_active: true,

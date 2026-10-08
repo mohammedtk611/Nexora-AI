@@ -1,7 +1,7 @@
 from typing import Any, Dict, Optional
 from fastapi import HTTPException, status
 
-class RevampAIException(Exception):
+class NexoraAIException(Exception):
     def __init__(
         self,
         code: str,
@@ -15,7 +15,7 @@ class RevampAIException(Exception):
         self.details = details or {}
         super().__init__(self.message)
 
-class AuthenticationError(RevampAIException):
+class AuthenticationError(NexoraAIException):
     def __init__(self, message: str = "Authentication failed", details: Optional[Dict[str, Any]] = None):
         super().__init__(
             code="AUTHENTICATION_FAILED",
@@ -24,7 +24,7 @@ class AuthenticationError(RevampAIException):
             details=details,
         )
 
-class AuthorizationError(RevampAIException):
+class AuthorizationError(NexoraAIException):
     def __init__(self, message: str = "Permission denied", details: Optional[Dict[str, Any]] = None):
         super().__init__(
             code="PERMISSION_DENIED",
@@ -33,7 +33,7 @@ class AuthorizationError(RevampAIException):
             details=details,
         )
 
-class NotFoundError(RevampAIException):
+class NotFoundError(NexoraAIException):
     def __init__(self, message: str = "Resource not found", details: Optional[Dict[str, Any]] = None):
         super().__init__(
             code="NOT_FOUND",
@@ -42,7 +42,7 @@ class NotFoundError(RevampAIException):
             details=details,
         )
 
-class ValidationError(RevampAIException):
+class ValidationError(NexoraAIException):
     def __init__(self, message: str = "Validation error", details: Optional[Dict[str, Any]] = None):
         super().__init__(
             code="VALIDATION_ERROR",
@@ -51,7 +51,7 @@ class ValidationError(RevampAIException):
             details=details,
         )
 
-class GenerationError(RevampAIException):
+class GenerationError(NexoraAIException):
     def __init__(self, message: str = "Generation failed", details: Optional[Dict[str, Any]] = None):
         super().__init__(
             code="GENERATION_FAILED",

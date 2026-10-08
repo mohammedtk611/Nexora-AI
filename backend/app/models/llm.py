@@ -4,7 +4,7 @@ from typing import Any, Dict, Optional, Type, TypeVar
 from pydantic import BaseModel
 from app.core.config import settings
 
-logger = logging.getLogger("revamp_ai.llm")
+logger = logging.getLogger("nexora_ai.llm")
 
 T = TypeVar("T", bound=BaseModel)
 
