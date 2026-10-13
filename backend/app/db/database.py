@@ -3,10 +3,36 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 from app.core.config import settings
 
+import socket
+from urllib.parse import urlparse, urlunparse
+
+def normalize_database_url(url: str) -> str:
+    if url.startswith("postgres://"):
+        url = url.replace("postgres://", "postgresql://", 1)
+    try:
+        parsed = urlparse(url)
+        host = parsed.hostname
+        if host and host.startswith("dpg-") and "." not in host:
+            # Check if internal host resolves
+            try:
+                socket.gethostbyname(host)
+            except Exception:
+                # Internal DNS failed (e.g. cross-region or private network routing)
+                for region in ["oregon", "frankfurt", "ohio", "singapore"]:
+                    candidate = f"{host}.{region}-postgres.render.com"
+                    try:
+                        socket.gethostbyname(candidate)
+                        netloc = parsed.netloc.replace(host, candidate)
+                        url = urlunparse(parsed._replace(netloc=netloc))
+                        break
+                    except Exception:
+                        pass
+    except Exception:
+        pass
+    return url
+
 # Create engine compatible with PostgreSQL and SQLite (for testing/local execution)
-db_url = settings.DATABASE_URL
-if db_url.startswith("postgres://"):
-    db_url = db_url.replace("postgres://", "postgresql://", 1)
+db_url = normalize_database_url(settings.DATABASE_URL)
 
 connect_args = {}
 if db_url.startswith("sqlite"):

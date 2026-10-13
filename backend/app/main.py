@@ -15,8 +15,21 @@ import app.db.models  # noqa
 # Initialize logging
 setup_logging()
 
-# Create database tables automatically
-Base.metadata.create_all(bind=engine)
+# Create database tables automatically with retries
+def init_db():
+    for attempt in range(1, 6):
+        try:
+            Base.metadata.create_all(bind=engine)
+            logger.info("Database tables initialized successfully.")
+            return
+        except Exception as e:
+            logger.warning(f"Database connection attempt {attempt}/5 failed: {e}")
+            if attempt < 5:
+                time.sleep(2)
+            else:
+                logger.error("Could not connect to database after 5 attempts. Starting server in degraded mode.")
+
+init_db()
 
 app = FastAPI(
     title=settings.APP_NAME,
