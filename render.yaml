@@ -13,23 +13,12 @@ services:
         fromDatabase:
           name: nexora-ai-db
           property: connectionString
-      - key: REDIS_URL
-        fromService:
-          type: redis
-          name: nexora-ai-redis
-          property: connectionString
       - key: ALLOWED_ORIGINS
         value: "https://your-vercel-frontend.vercel.app" # UPDATE THIS with your actual vercel URL after deployment
       - key: SECRET_KEY
         generateValue: true
       - key: JWT_SECRET_KEY
         generateValue: true
-      
-  - type: redis
-    name: nexora-ai-redis
-    region: oregon
-    plan: free # Change for production
-    ipAllowList: [] # Allows internal connections only by default
 
 databases:
   - name: nexora-ai-db
