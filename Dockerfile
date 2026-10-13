@@ -18,7 +18,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend/app ./app
-COPY storage ./storage
+RUN mkdir -p storage/artifacts storage/pdf storage/presentations storage/uploads storage/video
 
 EXPOSE 8000
 
