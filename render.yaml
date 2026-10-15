@@ -14,7 +14,7 @@ services:
           name: nexora-ai-db
           property: connectionString
       - key: ALLOWED_ORIGINS
-        value: "https://your-vercel-frontend.vercel.app" # UPDATE THIS with your actual vercel URL after deployment
+        value: "https://nexora-ai-nine-gamma.vercel.app,http://localhost:5173"
       - key: SECRET_KEY
         generateValue: true
       - key: JWT_SECRET_KEY
