@@ -43,6 +43,8 @@ if db_url.startswith("sqlite"):
         db_dir = os.path.dirname(db_path)
         if db_dir:
             os.makedirs(db_dir, exist_ok=True)
+elif "render.com" in db_url and "sslmode" not in db_url:
+    connect_args = {"sslmode": "require"}
 
 engine = create_engine(
     db_url,

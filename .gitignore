@@ -3,7 +3,9 @@
 !.env.example
 node_modules/
 **/node_modules/
-storage/
+/storage/
+/backend/storage/
+!backend/app/storage/
 __pycache__/
 *.pyc
 .venv/

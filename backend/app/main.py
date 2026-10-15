@@ -1,8 +1,11 @@
+import os
 import time
 import uuid
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 from app.core.config import settings
 from app.core.logging import setup_logging, logger
@@ -15,19 +18,32 @@ import app.db.models  # noqa
 # Initialize logging
 setup_logging()
 
-# Create database tables automatically with retries
+# Create database tables automatically with retries and fallback
 def init_db():
-    for attempt in range(1, 6):
+    for attempt in range(1, 4):
         try:
             Base.metadata.create_all(bind=engine)
-            logger.info("Database tables initialized successfully.")
+            logger.info("Database tables initialized successfully on primary database.")
             return
         except Exception as e:
-            logger.warning(f"Database connection attempt {attempt}/5 failed: {e}")
-            if attempt < 5:
+            logger.warning(f"Primary database connection attempt {attempt}/3 failed: {e}")
+            if attempt < 3:
                 time.sleep(2)
             else:
-                logger.error("Could not connect to database after 5 attempts. Starting server in degraded mode.")
+                logger.error("Primary database unreachable. Initializing local SQLite fallback...")
+
+    # Fallback to SQLite so server starts and functions reliably
+    try:
+        import app.db.database as db_module
+        fallback_path = "./storage/nexora_ai.db"
+        os.makedirs(os.path.dirname(fallback_path), exist_ok=True)
+        fallback_engine = create_engine(f"sqlite:///{fallback_path}", connect_args={"check_same_thread": False}, pool_pre_ping=True)
+        Base.metadata.create_all(bind=fallback_engine)
+        db_module.engine = fallback_engine
+        db_module.SessionLocal.configure(bind=fallback_engine)
+        logger.info("SQLite fallback database initialized successfully. Server operational.")
+    except Exception as e:
+        logger.error(f"Failed to initialize SQLite fallback: {e}")
 
 init_db()
 
