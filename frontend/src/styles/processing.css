@@ -86,11 +86,34 @@
   position: relative;
   display: flex;
   align-items: flex-start;
-  min-height: 84px;
+  min-height: 86px;
+  padding: 10px 14px;
+  border-radius: 16px;
+  border: 1px solid transparent;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: 4px;
 }
 
 .stepper-item:last-child {
   min-height: 0;
+  margin-bottom: 0;
+}
+
+.stepper-item.completed {
+  background: rgba(0, 255, 135, 0.03);
+  border-color: rgba(0, 255, 135, 0.16);
+  box-shadow: 0 4px 20px rgba(0, 255, 135, 0.04);
+}
+
+.stepper-item.completed:hover {
+  background: rgba(0, 255, 135, 0.06);
+  border-color: rgba(0, 255, 135, 0.3);
+}
+
+.stepper-item.active {
+  background: rgba(255, 45, 120, 0.05);
+  border-color: rgba(255, 45, 120, 0.3);
+  box-shadow: 0 4px 25px rgba(255, 45, 120, 0.08);
 }
 
 /* Vertical Track Segment */
@@ -101,25 +124,28 @@
   align-items: center;
   width: 36px;
   flex-shrink: 0;
+  padding-top: 2px;
 }
 
 .stepper-line {
   position: absolute;
-  top: 28px;
-  bottom: -4px;
+  top: 32px;
+  bottom: -8px;
   width: var(--stepper-track-width);
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
   transition: all 0.4s ease;
 }
 
 .stepper-line.completed {
-  background: linear-gradient(180deg, var(--neon-green) 0%, var(--neon-pink) 100%);
-  box-shadow: 0 0 8px rgba(0, 255, 135, 0.35);
+  background: linear-gradient(180deg, var(--neon-green) 0%, #10b981 100%);
+  box-shadow: 0 0 10px rgba(0, 255, 135, 0.7);
+  width: 3px;
 }
 
 .stepper-line.active {
   background: linear-gradient(180deg, var(--neon-pink) 0%, rgba(255, 255, 255, 0.15) 100%);
-  box-shadow: 0 0 8px rgba(255, 45, 120, 0.35);
+  box-shadow: 0 0 8px rgba(255, 45, 120, 0.45);
+  width: 2.5px;
 }
 
 /* Stepper Node Circles */
@@ -129,68 +155,74 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
 }
 
-/* 1. Active State (Halo Orb matching user uploaded design) */
+/* 1. Active State (Halo Orb matching user uploaded design: glowing diffuse halo + solid orb) */
 .stepper-node.active {
-  width: 22px;
-  height: 22px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--neon-pink) 0%, #ff5e98 100%);
-  animation: haloPulsePink 2.4s infinite ease-in-out;
+  background: radial-gradient(circle, #ff2d78 45%, #ff5e98 100%);
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 6px rgba(255, 45, 120, 0.25), 0 0 25px rgba(255, 45, 120, 0.95);
+  animation: haloPulsePink 2.2s infinite ease-in-out;
 }
 
 .stepper-node.active::after {
   content: '';
   position: absolute;
-  inset: -4px;
+  inset: -8px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 45, 120, 0.4);
-  animation: radarPing 2.4s infinite ease-out;
+  border: 1.5px solid rgba(255, 45, 120, 0.5);
+  animation: radarPing 2.2s infinite ease-out;
 }
 
-/* 2. Completed State */
+/* 2. Completed State (VIBRANT SOLID NEON GREEN CIRCLE as requested by user) */
 .stepper-node.completed {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00ff87 0%, #10b981 100%) !important;
+  border: 2px solid #ffffff !important;
+  box-shadow: 0 0 0 5px rgba(0, 255, 135, 0.25), 0 0 22px rgba(0, 255, 135, 0.95), 0 0 36px rgba(0, 255, 135, 0.5) !important;
+  animation: haloPulseGreen 3s infinite ease-in-out;
+}
+
+/* 3. Pending State (delicate hollow circle matching user uploaded design) */
+.stepper-node.pending {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #090b10;
-  border: 2.5px solid var(--neon-green);
-  box-shadow: 0 0 12px rgba(0, 255, 135, 0.45);
-}
-
-/* 3. Pending State */
-.stepper-node.pending {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: #0d0f17;
-  border: 2px solid rgba(255, 255, 255, 0.22);
+  background: #090b14;
+  border: 2px solid rgba(148, 163, 184, 0.35);
+  box-shadow: none;
 }
 
 /* Stepper Content Typography */
 .stepper-details {
-  margin-left: 1rem;
+  margin-left: 1.15rem;
   padding-top: 1px;
 }
 
 .stepper-num {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-weight: 700;
-  font-size: 0.825rem;
-  letter-spacing: 0.05em;
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
   margin-bottom: 0.15rem;
   transition: color 0.3s ease;
 }
 
 .stepper-num.active {
   color: var(--neon-pink);
-  text-shadow: 0 0 10px rgba(255, 45, 120, 0.5);
+  text-shadow: 0 0 14px rgba(255, 45, 120, 0.7);
 }
 
 .stepper-num.completed {
   color: var(--neon-green);
+  text-shadow: 0 0 12px rgba(0, 255, 135, 0.6);
 }
 
 .stepper-num.pending {
@@ -210,7 +242,7 @@
 }
 
 .stepper-label.completed {
-  color: #cbd5e1;
+  color: #ffffff;
   font-weight: 600;
 }
 

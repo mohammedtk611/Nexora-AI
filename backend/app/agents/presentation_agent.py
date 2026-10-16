@@ -37,7 +37,7 @@ Recommended Actions: {recs}
             prompt=prompt,
             schema_class=PresentationOutput,
             system_prompt="You structure slide presentations with bullet points and speaker notes.",
-            use_fast_model=False
+            use_fast_model=True
         )
         out = result.model_dump()
 

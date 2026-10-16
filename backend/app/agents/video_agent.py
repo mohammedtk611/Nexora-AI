@@ -38,7 +38,7 @@ Generate 3 to 5 concise scenes (duration 5-10s each).
             prompt=prompt,
             schema_class=VideoScriptOutput,
             system_prompt="You create multimedia video storyboards and voiceover scripts.",
-            use_fast_model=False
+            use_fast_model=True
         )
         out = result.model_dump()
 

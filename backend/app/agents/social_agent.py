@@ -39,7 +39,7 @@ Include relevant hashtags (e.g., #CyberSecurity #InfoSec #ThreatIntel).
             prompt=prompt,
             schema_class=SocialOutput,
             system_prompt="You create viral, high-authority cybersecurity posts for social media.",
-            use_fast_model=False
+            use_fast_model=True
         )
         out = result.model_dump()
 

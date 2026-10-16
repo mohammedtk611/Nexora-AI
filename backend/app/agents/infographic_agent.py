@@ -46,7 +46,7 @@ Recommended Actions: {recs}
             prompt=prompt,
             schema_class=InfographicOutput,
             system_prompt="You create structured data objects for frontend charts and vector infographics.",
-            use_fast_model=False
+            use_fast_model=True
         )
         out = result.model_dump()
 

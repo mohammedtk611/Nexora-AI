@@ -44,7 +44,7 @@ User Parameters:
             prompt=prompt,
             schema_class=AdvisoryOutput,
             system_prompt="You produce technical security advisories for SecOps and SOC teams.",
-            use_fast_model=False
+            use_fast_model=True
         )
         out = result.model_dump()
 

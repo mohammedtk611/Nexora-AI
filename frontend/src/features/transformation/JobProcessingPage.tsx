@@ -168,10 +168,62 @@ export function JobProcessingPage({ jobId, onNavigate }: JobProcessingPageProps)
 
   const currentStageIndex = getStageIndex(jobStatus.current_stage, isFinished);
 
+  // Stage completion & active detection helpers
+  const isStageCompleted = (idx: number, stageId: string): boolean => {
+    if (isFinished) return true;
+    if (idx < currentStageIndex) return true;
+    const agents = jobStatus.agents || [];
+    if (stageId === 'ingestion') {
+      return agents.some(a => a.name.includes('ingestion') && a.status === 'completed');
+    }
+    if (stageId === 'context_agent') {
+      return agents.some(a => a.name.includes('context') && a.status === 'completed');
+    }
+    if (stageId === 'rag_retriever') {
+      return agents.some(a => (a.name.includes('rag') || a.name.includes('retriev')) && a.status === 'completed');
+    }
+    if (stageId === 'ai_agents') {
+      return agents.some(a => ['executive_agent', 'advisory_agent', 'social_agent', 'presentation_agent', 'infographic_agent', 'video_agent'].includes(a.name) && a.status === 'completed');
+    }
+    if (stageId === 'compliance') {
+      return agents.some(a => a.name.includes('compliance') && a.status === 'completed');
+    }
+    if (stageId === 'artifact_generation') {
+      return agents.some(a => (a.name.includes('render') || a.name.includes('artifact')) && a.status === 'completed');
+    }
+    return false;
+  };
+
+  const isStageActive = (idx: number, stageId: string, completed: boolean): boolean => {
+    if (completed || isFinished) return false;
+    if (idx === currentStageIndex) return true;
+    const agents = jobStatus.agents || [];
+    if (stageId === 'ingestion') {
+      return agents.some(a => a.name.includes('ingestion') && a.status.startsWith('running')) || (idx === 0 && (!jobStatus.current_stage || jobStatus.current_stage === 'queued' || jobStatus.current_stage === 'ingestion_agent'));
+    }
+    if (stageId === 'context_agent') {
+      return agents.some(a => a.name.includes('context') && a.status.startsWith('running')) || (jobStatus.current_stage?.includes('context') ?? false);
+    }
+    if (stageId === 'rag_retriever') {
+      return agents.some(a => (a.name.includes('rag') || a.name.includes('retriev')) && a.status.startsWith('running')) || (jobStatus.current_stage?.includes('rag') ?? false);
+    }
+    if (stageId === 'ai_agents') {
+      return agents.some(a => ['executive_agent', 'advisory_agent', 'social_agent', 'presentation_agent', 'infographic_agent', 'video_agent'].includes(a.name) && a.status.startsWith('running'));
+    }
+    if (stageId === 'compliance') {
+      return agents.some(a => a.name.includes('compliance') && a.status.startsWith('running')) || (jobStatus.current_stage?.includes('compliance') ?? false);
+    }
+    if (stageId === 'artifact_generation') {
+      return agents.some(a => (a.name.includes('render') || a.name.includes('artifact')) && a.status.startsWith('running')) || (jobStatus.current_stage?.includes('render') ?? false);
+    }
+    return false;
+  };
+
   // Dynamic progress calculation
+  const completedCount = pipelineStages.filter((s, i) => isStageCompleted(i, s.id)).length;
   const progressPercent = isFinished
     ? 100
-    : Math.min(95, Math.round(((currentStageIndex + 0.6) / pipelineStages.length) * 100));
+    : Math.min(95, Math.max(10, Math.round(((completedCount + 0.5) / pipelineStages.length) * 100)));
 
   const formatTimer = (secs: number) => {
     const m = Math.floor(secs / 60);
@@ -211,21 +263,21 @@ export function JobProcessingPage({ jobId, onNavigate }: JobProcessingPageProps)
           </div>
 
           <div className="flex items-center gap-3">
-            <div className={`px-4 py-2 rounded-xl text-xs uppercase tracking-wider font-bold font-mono border backdrop-blur-md ${
+            <div className={`px-4 py-2 rounded-xl text-xs uppercase tracking-wider font-extrabold font-mono border backdrop-blur-md transition-all ${
               isFinished
-                ? 'bg-emerald-500/15 text-[#00ff87] border-[#00ff87]/40 shadow-[0_0_15px_rgba(0,255,135,0.25)]'
+                ? 'bg-[#00ff87] text-slate-950 border-[#00ff87] shadow-[0_0_20px_rgba(0,255,135,0.5)]'
                 : 'bg-pink-500/15 text-[#ff2d78] border-[#ff2d78]/40 shadow-[0_0_15px_rgba(255,45,120,0.25)] animate-pulse'
             }`}>
-              {jobStatus.status}
+              {isFinished ? 'COMPLETED' : jobStatus.status}
             </div>
 
             {isFinished && (
               <button
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm text-slate-950 bg-gradient-to-r from-[#00ff87] to-pink-400 hover:from-[#00ff87] hover:to-pink-300 shadow-[0_0_25px_rgba(0,255,135,0.4)] transition-all transform hover:scale-[1.02] active:scale-[0.98]"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-extrabold text-sm text-slate-950 bg-[#00ff87] hover:bg-[#60ffb3] shadow-[0_0_25px_rgba(0,255,135,0.6)] transition-all transform hover:scale-[1.03] active:scale-[0.98]"
                 onClick={() => navigate(`/transform/${jobId}`)}
               >
                 <span>View Results</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4 stroke-[2.5]" />
               </button>
             )}
           </div>
@@ -264,36 +316,43 @@ export function JobProcessingPage({ jobId, onNavigate }: JobProcessingPageProps)
                 Transformation Pipeline
               </h3>
             </div>
-            <span className="text-xs font-mono text-emerald-400 bg-emerald-950/40 border border-emerald-500/30 px-2.5 py-1 rounded-full">
-              Stage {Math.min(6, currentStageIndex + 1)} of 6
+            <span className="text-xs font-mono text-[#00ff87] bg-emerald-950/40 border border-[#00ff87]/30 px-2.5 py-1 rounded-full font-bold shadow-[0_0_10px_rgba(0,255,135,0.15)]">
+              {completedCount} of 6 Completed
             </span>
           </div>
 
           {/* Stepper Timeline matching user's exact uploaded designs */}
-          <div className="stepper-timeline pl-2">
+          <div className="stepper-timeline pl-1">
             {pipelineStages.map((stage, idx) => {
-              const isActive = idx === currentStageIndex && !isFinished;
-              const isCompleted = idx < currentStageIndex || isFinished;
-              const isPending = idx > currentStageIndex && !isFinished;
+              const isCompleted = isStageCompleted(idx, stage.id);
+              const isActive = isStageActive(idx, stage.id, isCompleted);
+              const isPending = !isCompleted && !isActive;
               const isLast = idx === pipelineStages.length - 1;
 
               return (
-                <div key={stage.id} className="stepper-item">
+                <div
+                  key={stage.id}
+                  className={`stepper-item ${
+                    isCompleted ? 'completed' : isActive ? 'active' : ''
+                  }`}
+                >
                   {/* Left Column: Node circle & Connecting track */}
                   <div className="stepper-line-container">
-                    {/* The Node */}
+                    {/* The Node: Solid Radiant Green on complete, Glowing Pink Halo Orb on active, Hollow on pending */}
                     <div
                       className={`stepper-node ${
-                        isActive
-                          ? 'active'
-                          : isCompleted
+                        isCompleted
                           ? 'completed'
+                          : isActive
+                          ? 'active'
                           : 'pending'
                       }`}
                     >
-                      {isCompleted && (
-                        <Check className="w-3 h-3 text-[#00ff87] stroke-[3]" />
-                      )}
+                      {isCompleted ? (
+                        <Check className="w-3.5 h-3.5 text-slate-950 stroke-[3.5]" />
+                      ) : isActive ? (
+                        <div className="w-2.5 h-2.5 rounded-full bg-white shadow-sm" />
+                      ) : null}
                     </div>
 
                     {/* Connecting Vertical Track */}
@@ -311,34 +370,47 @@ export function JobProcessingPage({ jobId, onNavigate }: JobProcessingPageProps)
                   </div>
 
                   {/* Right Details */}
-                  <div className="stepper-details flex-1 pb-6">
-                    {/* Number in Pink or Green */}
-                    <div
-                      className={`stepper-num ${
-                        isActive
-                          ? 'active'
-                          : isCompleted
-                          ? 'completed'
-                          : 'pending'
-                      }`}
-                    >
-                      {stage.number}
+                  <div className="stepper-details flex-1 pb-4">
+                    <div className="flex items-center justify-between">
+                      {/* Number in Pink or Green */}
+                      <div
+                        className={`stepper-num ${
+                          isCompleted
+                            ? 'completed'
+                            : isActive
+                            ? 'active'
+                            : 'pending'
+                        }`}
+                      >
+                        {stage.number}
+                      </div>
+
+                      {/* Stage status indicator button / badge */}
+                      {isCompleted ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#00ff87] text-slate-950 shadow-[0_0_12px_rgba(0,255,135,0.4)]">
+                          <Check className="w-2.5 h-2.5 stroke-[3.5]" /> DONE
+                        </span>
+                      ) : isActive ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-pink-500/20 text-[#ff2d78] border border-[#ff2d78]/40 shadow-[0_0_10px_rgba(255,45,120,0.3)] animate-pulse">
+                          <Activity className="w-2.5 h-2.5 text-[#ff2d78]" /> IN PROGRESS
+                        </span>
+                      ) : null}
                     </div>
 
                     {/* Stage Title */}
                     <h4
                       className={`stepper-label ${
-                        isActive
-                          ? 'active'
-                          : isCompleted
+                        isCompleted
                           ? 'completed'
+                          : isActive
+                          ? 'active'
                           : 'pending'
                       }`}
                     >
                       {stage.title}
                     </h4>
 
-                    {/* Description & Status */}
+                    {/* Description */}
                     <p className="stepper-desc">{stage.desc}</p>
 
                     {isActive && (
@@ -365,12 +437,12 @@ export function JobProcessingPage({ jobId, onNavigate }: JobProcessingPageProps)
                   Autonomous Agent Fleet
                 </h3>
               </div>
-              <span className="text-xs font-mono text-slate-400">
-                {jobStatus.agents?.filter(a => a.status === 'completed').length || 0} / {jobStatus.agents?.length || 8} Active
+              <span className="text-xs font-mono text-[#00ff87] font-semibold">
+                {jobStatus.agents?.filter(a => a.status === 'completed').length || 0} / {jobStatus.agents?.length || 8} Completed
               </span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-60 overflow-y-auto pr-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-64 overflow-y-auto pr-1">
               {jobStatus.agents && jobStatus.agents.length > 0 ? (
                 jobStatus.agents.map((agent) => {
                   const isAgentRunning = agent.status.startsWith('running');
@@ -380,20 +452,20 @@ export function JobProcessingPage({ jobId, onNavigate }: JobProcessingPageProps)
                     <div
                       key={agent.name}
                       className={`p-3 rounded-xl border transition-all flex items-center justify-between ${
-                        isAgentRunning
+                        isAgentDone
+                          ? 'bg-emerald-950/30 border-[#00ff87]/40 shadow-[0_0_15px_rgba(0,255,135,0.1)]'
+                          : isAgentRunning
                           ? 'bg-pink-950/20 border-pink-500/40 shadow-[0_0_12px_rgba(255,45,120,0.15)]'
-                          : isAgentDone
-                          ? 'bg-emerald-950/20 border-emerald-500/30'
                           : 'bg-slate-950/40 border-white/5 opacity-60'
                       }`}
                     >
                       <div className="flex items-center gap-2 min-w-0">
                         <div
-                          className={`w-2 h-2 rounded-full ${
-                            isAgentRunning
+                          className={`w-2.5 h-2.5 rounded-full ${
+                            isAgentDone
+                              ? 'bg-[#00ff87] shadow-[0_0_8px_#00ff87]'
+                              : isAgentRunning
                               ? 'bg-[#ff2d78] animate-ping'
-                              : isAgentDone
-                              ? 'bg-[#00ff87]'
                               : 'bg-slate-600'
                           }`}
                         />
@@ -403,15 +475,15 @@ export function JobProcessingPage({ jobId, onNavigate }: JobProcessingPageProps)
                       </div>
 
                       <span
-                        className={`text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded-full ${
+                        className={`text-[10px] uppercase font-mono font-extrabold px-2.5 py-0.5 rounded-full transition-all ${
                           isAgentDone
-                            ? 'bg-emerald-500/20 text-[#00ff87] border border-emerald-500/40'
+                            ? 'bg-[#00ff87] text-slate-950 border border-[#00ff87] shadow-[0_0_10px_rgba(0,255,135,0.4)]'
                             : isAgentRunning
-                            ? 'bg-pink-500/20 text-pink-300 border border-pink-500/40 animate-pulse'
+                            ? 'bg-pink-500/20 text-[#ff2d78] border border-pink-500/40 animate-pulse'
                             : 'bg-slate-800 text-slate-400'
                         }`}
                       >
-                        {agent.status}
+                        {isAgentDone ? 'DONE' : agent.status}
                       </span>
                     </div>
                   );

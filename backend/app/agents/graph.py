@@ -70,50 +70,51 @@ class TransformationGraphRunner:
             # Intent-based agent routing map
             routed_formats = self._determine_agent_routes(active_intent, requested_formats)
 
-            # Stage 5 & 6: Generation & Validation Auto-Retry Loop
-            for attempt in range(MAX_VALIDATION_RETRIES + 1):
-                attempt_label = f" (Retry {attempt})" if attempt > 0 else ""
+            # Stage 5: Generation (Parallel execution across active agents for maximum speed)
+            from concurrent.futures import ThreadPoolExecutor, as_completed
 
-                if "executive_brief" in routed_formats:
-                    update_progress("executive_agent", f"running{attempt_label}")
-                    state.executive_brief = executive_agent.run(state)
-                    update_progress("executive_agent", "completed")
+            def _run_single_agent(agent_name: str):
+                try:
+                    if agent_name == "executive_brief":
+                        update_progress("executive_agent", "running")
+                        state.executive_brief = executive_agent.run(state)
+                        update_progress("executive_agent", "completed")
+                    elif agent_name == "advisory":
+                        update_progress("advisory_agent", "running")
+                        state.advisory = advisory_agent.run(state)
+                        update_progress("advisory_agent", "completed")
+                    elif agent_name == "social":
+                        update_progress("social_agent", "running")
+                        state.social = social_agent.run(state)
+                        update_progress("social_agent", "completed")
+                    elif agent_name == "presentation":
+                        update_progress("presentation_agent", "running")
+                        state.presentation = presentation_agent.run(state)
+                        update_progress("presentation_agent", "completed")
+                    elif agent_name == "infographic":
+                        update_progress("infographic_agent", "running")
+                        state.infographic = infographic_agent.run(state)
+                        update_progress("infographic_agent", "completed")
+                    elif agent_name in ["video", "video_script"]:
+                        update_progress("video_agent", "running")
+                        state.video_script = video_agent.run(state)
+                        update_progress("video_agent", "completed")
+                except Exception as ex:
+                    logger.error(f"Error running agent {agent_name}: {ex}")
 
-                if "advisory" in routed_formats:
-                    update_progress("advisory_agent", f"running{attempt_label}")
-                    state.advisory = advisory_agent.run(state)
-                    update_progress("advisory_agent", "completed")
+            with ThreadPoolExecutor(max_workers=3) as executor:
+                futures = [executor.submit(_run_single_agent, fmt) for fmt in routed_formats]
+                for f in as_completed(futures):
+                    try:
+                        f.result()
+                    except Exception as e:
+                        logger.error(f"Agent task exception: {e}")
 
-                if "social" in routed_formats:
-                    update_progress("social_agent", f"running{attempt_label}")
-                    state.social = social_agent.run(state)
-                    update_progress("social_agent", "completed")
-
-                if "presentation" in routed_formats:
-                    update_progress("presentation_agent", f"running{attempt_label}")
-                    state.presentation = presentation_agent.run(state)
-                    update_progress("presentation_agent", "completed")
-
-                if "infographic" in routed_formats:
-                    update_progress("infographic_agent", f"running{attempt_label}")
-                    state.infographic = infographic_agent.run(state)
-                    update_progress("infographic_agent", "completed")
-
-                if "video" in routed_formats or "video_script" in routed_formats:
-                    update_progress("video_agent", f"running{attempt_label}")
-                    state.video_script = video_agent.run(state)
-                    update_progress("video_agent", "completed")
-
-                # Compliance & Factual Consistency Validation Check
-                update_progress("compliance_agent", f"running{attempt_label}")
-                report = compliance_agent.run(state)
-                state.compliance_report = report
-                update_progress("compliance_agent", "completed", {"status": report.get("status")})
-
-                if report.get("status") in ["passed", "warning"] or attempt == MAX_VALIDATION_RETRIES:
-                    break
-                else:
-                    logger.warning(f"Validation failed on attempt {attempt + 1}. Diagnostic feedback: {report.get('diagnostic_feedback')}")
+            # Stage 6: Compliance & Factual Consistency Validation Check
+            update_progress("compliance_agent", "running")
+            report = compliance_agent.run(state)
+            state.compliance_report = report
+            update_progress("compliance_agent", "completed", {"status": report.get("status")})
 
             # Stage 7: Rendering Artifact Files
             update_progress("rendering", "running")

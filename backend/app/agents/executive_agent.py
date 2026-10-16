@@ -58,7 +58,7 @@ REQUIRED FIELDS (Do not leave any field empty):
             prompt=prompt,
             schema_class=ExecutiveBriefOutput,
             system_prompt="You produce executive leadership briefs for CISOs and enterprise CEOs.",
-            use_fast_model=False
+            use_fast_model=True
         )
 
         output_dict = result.model_dump()
