@@ -70,10 +70,8 @@ class TransformationGraphRunner:
             # Intent-based agent routing map
             routed_formats = self._determine_agent_routes(active_intent, requested_formats)
 
-            # Stage 5: Generation (Parallel execution across active agents for maximum speed)
-            from concurrent.futures import ThreadPoolExecutor, as_completed
-
-            def _run_single_agent(agent_name: str):
+            # Stage 5: Generation (Sequential execution across active routed agents)
+            for agent_name in routed_formats:
                 try:
                     if agent_name == "executive_brief":
                         update_progress("executive_agent", "running")
@@ -101,14 +99,6 @@ class TransformationGraphRunner:
                         update_progress("video_agent", "completed")
                 except Exception as ex:
                     logger.error(f"Error running agent {agent_name}: {ex}")
-
-            with ThreadPoolExecutor(max_workers=3) as executor:
-                futures = [executor.submit(_run_single_agent, fmt) for fmt in routed_formats]
-                for f in as_completed(futures):
-                    try:
-                        f.result()
-                    except Exception as e:
-                        logger.error(f"Agent task exception: {e}")
 
             # Stage 6: Compliance & Factual Consistency Validation Check
             update_progress("compliance_agent", "running")

@@ -19,6 +19,12 @@ services:
         generateValue: true
       - key: JWT_SECRET_KEY
         generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: "gemini-3.5-flash"
+      - key: GEMINI_FAST_MODEL
+        value: "gemini-3.5-flash"
 
 databases:
   - name: nexora-ai-db

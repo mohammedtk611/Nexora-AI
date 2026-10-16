@@ -98,10 +98,7 @@ class LLMService:
             logger.info("Gemini API key not configured, falling back to simulated output.")
             return self._simulated_response(prompt, system_prompt)
 
-        candidates = [primary_model, "gemini-3.5-flash-lite", "gemini-3.5-flash", "gemini-flash-latest", "gemini-3.8-flash"]
-        # If primary model is heavy or slow, prioritize flash-lite
-        if primary_model in ["gemini-3.8-flash", "gemini-1.5-flash"]:
-            candidates = ["gemini-3.5-flash-lite", "gemini-3.5-flash", primary_model, "gemini-flash-latest"]
+        candidates = ["gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-flash-latest", "gemini-3.8-flash"]
 
         seen = set()
         model_list = [m for m in candidates if m and not (m in seen or seen.add(m))]
