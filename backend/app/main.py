@@ -20,19 +20,14 @@ setup_logging()
 
 # Create database tables automatically with retries and fallback
 def init_db():
-    for attempt in range(1, 4):
-        try:
-            Base.metadata.create_all(bind=engine)
-            logger.info("Database tables initialized successfully on primary database.")
-            return
-        except Exception as e:
-            logger.warning(f"Primary database connection attempt {attempt}/3 failed: {e}")
-            if attempt < 3:
-                time.sleep(2)
-            else:
-                logger.error("Primary database unreachable. Initializing local SQLite fallback...")
+    try:
+        Base.metadata.create_all(bind=engine)
+        logger.info("Database tables initialized successfully on primary database.")
+        return
+    except Exception as e:
+        logger.warning(f"Primary database connection unavailable ({e}). Initializing instant local SQLite fallback...")
 
-    # Fallback to SQLite so server starts and functions reliably
+    # Fallback to SQLite so server starts and functions immediately without blocking
     try:
         import app.db.database as db_module
         fallback_path = "./storage/nexora_ai.db"

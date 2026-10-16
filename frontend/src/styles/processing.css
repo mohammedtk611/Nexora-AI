@@ -1,61 +1,263 @@
-/* Processing Pipeline */
-.pipeline-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem 0;
+/* ==========================================================================
+   Nexora AI - Processing Pipeline Stepper & Cyber Green/Pink Animations
+   ========================================================================== */
+
+:root {
+  --neon-pink: #ff2d78;
+  --neon-pink-light: #ff65a3;
+  --neon-pink-glow: rgba(255, 45, 120, 0.55);
+  --neon-pink-subtle: rgba(255, 45, 120, 0.15);
+
+  --neon-green: #00ff87;
+  --neon-green-light: #60ffb3;
+  --neon-green-glow: rgba(0, 255, 135, 0.5);
+  --neon-green-subtle: rgba(0, 255, 135, 0.15);
+
+  --stepper-track-width: 2px;
 }
 
-.pipeline-stage {
+/* --------------------------------------------------------------------------
+   Keyframe Animations
+   -------------------------------------------------------------------------- */
+@keyframes haloPulsePink {
+  0%, 100% {
+    box-shadow: 0 0 0 5px rgba(255, 45, 120, 0.22), 0 0 24px rgba(255, 45, 120, 0.7);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 0 9px rgba(255, 45, 120, 0.32), 0 0 35px rgba(255, 45, 120, 0.95);
+    transform: scale(1.08);
+  }
+}
+
+@keyframes haloPulseGreen {
+  0%, 100% {
+    box-shadow: 0 0 0 5px rgba(0, 255, 135, 0.22), 0 0 24px rgba(0, 255, 135, 0.7);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 0 9px rgba(0, 255, 135, 0.32), 0 0 35px rgba(0, 255, 135, 0.95);
+    transform: scale(1.08);
+  }
+}
+
+@keyframes radarPing {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+@keyframes shimmerTrack {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 0% 200%;
+  }
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Vertical Stepper Component
+   -------------------------------------------------------------------------- */
+.stepper-timeline {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.stepper-item {
+  position: relative;
   display: flex;
   align-items: flex-start;
-  gap: 1.5rem;
-  padding: 1.5rem;
-  border-left: 2px solid var(--border);
-  position: relative;
+  min-height: 84px;
 }
 
-.pipeline-stage::before {
+.stepper-item:last-child {
+  min-height: 0;
+}
+
+/* Vertical Track Segment */
+.stepper-line-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 36px;
+  flex-shrink: 0;
+}
+
+.stepper-line {
+  position: absolute;
+  top: 28px;
+  bottom: -4px;
+  width: var(--stepper-track-width);
+  background: rgba(255, 255, 255, 0.1);
+  transition: all 0.4s ease;
+}
+
+.stepper-line.completed {
+  background: linear-gradient(180deg, var(--neon-green) 0%, var(--neon-pink) 100%);
+  box-shadow: 0 0 8px rgba(0, 255, 135, 0.35);
+}
+
+.stepper-line.active {
+  background: linear-gradient(180deg, var(--neon-pink) 0%, rgba(255, 255, 255, 0.15) 100%);
+  box-shadow: 0 0 8px rgba(255, 45, 120, 0.35);
+}
+
+/* Stepper Node Circles */
+.stepper-node {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 1. Active State (Halo Orb matching user uploaded design) */
+.stepper-node.active {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--neon-pink) 0%, #ff5e98 100%);
+  animation: haloPulsePink 2.4s infinite ease-in-out;
+}
+
+.stepper-node.active::after {
   content: '';
   position: absolute;
-  left: -9px;
-  top: 1.5rem;
-  width: 16px;
-  height: 16px;
+  inset: -4px;
   border-radius: 50%;
-  background: var(--bg-primary);
-  border: 2px solid var(--border-light);
+  border: 1px solid rgba(255, 45, 120, 0.4);
+  animation: radarPing 2.4s infinite ease-out;
 }
 
-.pipeline-stage.active {
-  border-left-color: var(--accent);
+/* 2. Completed State */
+.stepper-node.completed {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #090b10;
+  border: 2.5px solid var(--neon-green);
+  box-shadow: 0 0 12px rgba(0, 255, 135, 0.45);
 }
 
-.pipeline-stage.active::before {
-  border-color: var(--accent);
-  background: var(--accent);
-  box-shadow: 0 0 0 4px rgba(217, 168, 184, 0.2);
+/* 3. Pending State */
+.stepper-node.pending {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #0d0f17;
+  border: 2px solid rgba(255, 255, 255, 0.22);
 }
 
-.pipeline-stage.completed {
-  border-left-color: var(--success);
+/* Stepper Content Typography */
+.stepper-details {
+  margin-left: 1rem;
+  padding-top: 1px;
 }
 
-.pipeline-stage.completed::before {
-  border-color: var(--success);
-  background: var(--success);
+.stepper-num {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-weight: 700;
+  font-size: 0.825rem;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.15rem;
+  transition: color 0.3s ease;
 }
 
-.stage-content {
-  flex: 1;
+.stepper-num.active {
+  color: var(--neon-pink);
+  text-shadow: 0 0 10px rgba(255, 45, 120, 0.5);
 }
 
-.stage-title {
+.stepper-num.completed {
+  color: var(--neon-green);
+}
+
+.stepper-num.pending {
+  color: #64748b;
+}
+
+.stepper-label {
+  font-size: 1.05rem;
+  line-height: 1.35;
+  transition: all 0.3s ease;
+}
+
+.stepper-label.active {
+  color: #ffffff;
+  font-weight: 700;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.25);
+}
+
+.stepper-label.completed {
+  color: #cbd5e1;
   font-weight: 600;
-  margin-bottom: 0.5rem;
-  font-size: 1rem;
 }
 
-.stage-desc {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
+.stepper-label.pending {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.stepper-desc {
+  font-size: 0.775rem;
+  color: #94a3b8;
+  margin-top: 0.2rem;
+}
+
+/* --------------------------------------------------------------------------
+   Green & Pink Ambient Theme Utilities
+   -------------------------------------------------------------------------- */
+.theme-cyber-glow {
+  background: radial-gradient(circle at 10% 10%, rgba(255, 45, 120, 0.12) 0%, transparent 45%),
+              radial-gradient(circle at 90% 90%, rgba(0, 255, 135, 0.10) 0%, transparent 45%);
+}
+
+.theme-card-gradient {
+  background: linear-gradient(145deg, rgba(17, 21, 32, 0.85) 0%, rgba(11, 14, 22, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.theme-card-gradient:hover {
+  border-color: rgba(255, 45, 120, 0.25);
+}
+
+.progress-bar-neon {
+  background: linear-gradient(90deg, var(--neon-green) 0%, #38ef7d 40%, var(--neon-pink) 100%);
+  box-shadow: 0 0 15px rgba(0, 255, 135, 0.4), 0 0 25px rgba(255, 45, 120, 0.35);
+}
+
+.badge-active-pulse {
+  background: rgba(255, 45, 120, 0.15);
+  border: 1px solid rgba(255, 45, 120, 0.4);
+  color: var(--neon-pink-light);
+  box-shadow: 0 0 12px rgba(255, 45, 120, 0.25);
+}
+
+.badge-completed-neon {
+  background: rgba(0, 255, 135, 0.15);
+  border: 1px solid rgba(0, 255, 135, 0.4);
+  color: var(--neon-green);
+  box-shadow: 0 0 12px rgba(0, 255, 135, 0.25);
 }

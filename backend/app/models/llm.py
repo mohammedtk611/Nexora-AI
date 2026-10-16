@@ -98,7 +98,11 @@ class LLMService:
             logger.info("Gemini API key not configured, falling back to simulated output.")
             return self._simulated_response(prompt, system_prompt)
 
-        candidates = [primary_model, "gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-flash-latest", "gemini-3.8-flash"]
+        candidates = [primary_model, "gemini-3.5-flash-lite", "gemini-3.5-flash", "gemini-flash-latest", "gemini-3.8-flash"]
+        # If primary model is heavy or slow, prioritize flash-lite
+        if primary_model in ["gemini-3.8-flash", "gemini-1.5-flash"]:
+            candidates = ["gemini-3.5-flash-lite", "gemini-3.5-flash", primary_model, "gemini-flash-latest"]
+
         seen = set()
         model_list = [m for m in candidates if m and not (m in seen or seen.add(m))]
 
@@ -118,7 +122,11 @@ class LLMService:
                     config=config if config else None
                 )
                 return response.text or ""
-            except Exception:
+            except Exception as e:
+                err_str = str(e).lower()
+                # Fast-fail if quota exhausted, overloaded, or not found so we immediately try the next model
+                if "429" in err_str or "quota" in err_str or "503" in err_str or "404" in err_str or "unavailable" in err_str:
+                    raise e
                 import google.generativeai as genai
                 genai.configure(api_key=key)
                 model = genai.GenerativeModel(
