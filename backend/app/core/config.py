@@ -6,7 +6,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file="../.env",
+        env_file=[".env", "../.env"],
         env_file_encoding="utf-8",
         extra="ignore"
     )
@@ -18,8 +18,8 @@ class Settings(BaseSettings):
     # LLM Settings
     LLM_PROVIDER: str = "gemini"  # gemini or ollama
     GEMINI_API_KEY: Optional[str] = Field(default=None)
-    GEMINI_MODEL: str = "gemini-1.5-flash"
-    GEMINI_FAST_MODEL: str = "gemini-1.5-flash"
+    GEMINI_MODEL: str = "gemini-3.5-flash"
+    GEMINI_FAST_MODEL: str = "gemini-3.5-flash"
 
 
     OLLAMA_BASE_URL: str = "http://localhost:11434"

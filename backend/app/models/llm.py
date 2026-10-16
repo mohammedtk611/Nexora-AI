@@ -17,12 +17,12 @@ class LLMService:
         self.ollama_base_url = settings.OLLAMA_BASE_URL
         self.ollama_model = settings.OLLAMA_MODEL
 
-    def generate_text(self, prompt: str, system_prompt: Optional[str] = None, use_fast_model: bool = False) -> str:
+    def generate_text(self, prompt: str, system_prompt: Optional[str] = None, use_fast_model: bool = False, json_mode: bool = False) -> str:
         provider = settings.LLM_PROVIDER
         if provider == "ollama":
             return self._call_ollama(prompt, system_prompt)
         else:
-            return self._call_gemini(prompt, system_prompt, use_fast_model)
+            return self._call_gemini(prompt, system_prompt, use_fast_model, json_mode)
 
     def generate_json(self, prompt: str, schema_class: Type[T], system_prompt: Optional[str] = None, use_fast_model: bool = False) -> T:
         json_instruction = (
@@ -30,7 +30,7 @@ class LLMService:
             f"{json.dumps(schema_class.model_json_schema(), indent=2)}"
         )
         full_prompt = prompt + json_instruction
-        raw_output = self.generate_text(full_prompt, system_prompt, use_fast_model)
+        raw_output = self.generate_text(full_prompt, system_prompt, use_fast_model, json_mode=True)
         
         # Clean potential markdown backticks
         cleaned = raw_output.strip()
@@ -90,23 +90,34 @@ class LLMService:
             except Exception:
                 return schema_class.model_construct(**args)
 
-    def _call_gemini(self, prompt: str, system_prompt: Optional[str] = None, use_fast_model: bool = False) -> str:
-        model_name = self.gemini_fast_model if use_fast_model else self.gemini_model
+    def _call_gemini(self, prompt: str, system_prompt: Optional[str] = None, use_fast_model: bool = False, json_mode: bool = False) -> str:
+        primary_model = settings.GEMINI_FAST_MODEL if use_fast_model else settings.GEMINI_MODEL
         key = settings.GEMINI_API_KEY
 
         if not key or key == "your_gemini_api_key_here":
             logger.info("Gemini API key not configured, falling back to simulated output.")
             return self._simulated_response(prompt, system_prompt)
 
+        candidates = [primary_model, "gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-flash-latest", "gemini-3.8-flash"]
+        seen = set()
+        model_list = [m for m in candidates if m and not (m in seen or seen.add(m))]
+
         def _attempt_call(target_model: str) -> str:
+            config = {}
+            if json_mode:
+                config["response_mime_type"] = "application/json"
+            if system_prompt:
+                config["system_instruction"] = system_prompt
+
             try:
                 from google import genai
                 client = genai.Client(api_key=key)
                 response = client.models.generate_content(
                     model=target_model,
-                    contents=prompt
+                    contents=prompt,
+                    config=config if config else None
                 )
-                return response.text
+                return response.text or ""
             except Exception:
                 import google.generativeai as genai
                 genai.configure(api_key=key)
@@ -114,20 +125,22 @@ class LLMService:
                     model_name=target_model,
                     system_instruction=system_prompt
                 )
-                response = model.generate_content(prompt)
-                return response.text
+                gen_config = {"response_mime_type": "application/json"} if json_mode else None
+                response = model.generate_content(prompt, generation_config=gen_config)
+                return response.text or ""
 
-        try:
-            return _attempt_call(model_name)
-        except Exception as e:
-            logger.error(f"Gemini API call failed for {model_name}: {e}")
-            if not use_fast_model and self.gemini_fast_model and self.gemini_fast_model != model_name:
-                logger.info(f"Falling back to fast model: {self.gemini_fast_model}")
-                try:
-                    return _attempt_call(self.gemini_fast_model)
-                except Exception as fallback_e:
-                    logger.error(f"Fallback to {self.gemini_fast_model} also failed: {fallback_e}")
-            return self._simulated_response(prompt, system_prompt)
+        last_error = None
+        for m in model_list:
+            try:
+                text_out = _attempt_call(m)
+                if text_out:
+                    return text_out
+            except Exception as e:
+                last_error = e
+                logger.warning(f"Gemini API attempt on {m} failed: {e}. Trying next available model...")
+
+        logger.error(f"All Gemini candidate models failed. Last error: {last_error}")
+        return self._simulated_response(prompt, system_prompt)
 
 
 
