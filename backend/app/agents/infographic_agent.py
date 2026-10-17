@@ -9,7 +9,7 @@ class InfographicMetric(BaseModel):
     description: str = "Description"
 
 class InfographicOutput(BaseModel):
-    title: str = "Cybersecurity Intelligence Infographic Data"
+    title: str = "Executive Intelligence Infographic Data"
     severity: str = "HIGH"
     core_topic: str = ""
     impact_summary: str = ""
@@ -23,7 +23,7 @@ class InfographicOutput(BaseModel):
 class InfographicAgent:
     def run(self, state: TransformationState) -> Dict[str, Any]:
         ctx = state.central_context
-        topic = ctx.core_topic if ctx and ctx.core_topic else "Threat Intelligence Infographic"
+        topic = ctx.core_topic if ctx and ctx.core_topic else "Operational Analysis Infographic"
         severity = ctx.severity if ctx and ctx.severity else ctx.urgency_level.upper() if ctx else "HIGH"
         affected = ctx.affected_systems if ctx else []
         indicators = ctx.threat_indicators if ctx else []
@@ -63,9 +63,9 @@ Recommended Actions: {recs}
         if not out.get("indicators"):
             out["indicators"] = indicators if indicators else (affected if affected else ["Primary Operational Sector"])
         if not out.get("affected_systems"):
-            out["affected_systems"] = affected if affected else ["Municipal / Sector Infrastructure"]
+            out["affected_systems"] = affected if affected else [f"{topic} Operational Scope"]
         if not out.get("mitigation_flow"):
-            out["mitigation_flow"] = recs if recs else ["Deploy Field Teams", "Activate Relief Shelters", "Post-Incident Recovery"]
+            out["mitigation_flow"] = recs if recs else ["Deploy Operational Teams", "Initiate Core Remediation", "Conduct Final Review"]
 
         return out
 

@@ -10,7 +10,18 @@ class RAGRetriever:
         vector_store.upsert_chunks(document_id=document_id, chunks=chunks, metadata=metadata)
         return len(chunks)
 
-    def retrieve(self, query: str, top_k: int = 5, project_id: Optional[str] = None) -> List[Dict[str, Any]]:
-        return vector_store.search(query=query, top_k=top_k, filter_project_id=project_id)
+    def retrieve(
+        self,
+        query: str,
+        top_k: int = 5,
+        project_id: Optional[str] = None,
+        document_ids: Optional[List[str]] = None
+    ) -> List[Dict[str, Any]]:
+        return vector_store.search(
+            query=query,
+            top_k=top_k,
+            filter_project_id=project_id,
+            filter_document_ids=document_ids
+        )
 
 rag_retriever = RAGRetriever()

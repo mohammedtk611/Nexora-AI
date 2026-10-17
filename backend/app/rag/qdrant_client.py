@@ -67,15 +67,28 @@ class QdrantVectorStore:
 
         return point_ids
 
-    def search(self, query: str, top_k: int = 5, filter_project_id: Optional[str] = None) -> List[Dict[str, Any]]:
+    def search(
+        self,
+        query: str,
+        top_k: int = 5,
+        filter_project_id: Optional[str] = None,
+        filter_document_ids: Optional[List[str]] = None
+    ) -> List[Dict[str, Any]]:
         query_vec = embeddings_service.embed_text(query)
         client = self._get_client()
 
         if client is not None:
             try:
+                query_filter = None
+                if filter_document_ids:
+                    from qdrant_client.models import Filter, FieldCondition, MatchAny
+                    query_filter = Filter(
+                        must=[FieldCondition(key="document_id", match=MatchAny(any=filter_document_ids))]
+                    )
                 hits = client.search(
                     collection_name=self.collection_name,
                     query_vector=query_vec,
+                    query_filter=query_filter,
                     limit=top_k
                 )
                 results = []
@@ -101,6 +114,10 @@ class QdrantVectorStore:
 
         scores = []
         for doc in self._in_memory_docs:
+            if filter_document_ids:
+                doc_id = doc["payload"].get("document_id")
+                if doc_id not in filter_document_ids:
+                    continue
             if filter_project_id:
                 doc_proj = doc["payload"].get("metadata", {}).get("project_id")
                 if doc_proj and doc_proj != filter_project_id:

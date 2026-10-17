@@ -1,8 +1,8 @@
 import os
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 class PPTXRenderer:
-    def render_presentation(self, slides_data: List[Dict[str, Any]], output_path: str) -> str:
+    def render_presentation(self, slides_data: List[Dict[str, Any]], output_path: str, presentation_title: Optional[str] = None) -> str:
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
         
         try:
@@ -17,7 +17,7 @@ class PPTXRenderer:
             slide = prs.slides.add_slide(title_slide_layout)
             title = slide.shapes.title
             subtitle = slide.placeholders[1]
-            title.text = "Cybersecurity Intelligence Briefing"
+            title.text = presentation_title or "Executive Briefing Presentation"
             subtitle.text = "Nexora AI Intelligence Report"
 
             # Content slides

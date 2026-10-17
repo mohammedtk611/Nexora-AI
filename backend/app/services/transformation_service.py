@@ -32,7 +32,7 @@ class TransformationService:
                 user = auth_service.register_user(db, "admin@nexora.ai", "AdminPass123!", "Default Admin")
             proj = Project(
                 id=project_id,
-                name="Cybersecurity Intelligence Project",
+                name="Intelligence Transformation Project",
                 description="Auto-created default project",
                 owner_id=user.id
             )

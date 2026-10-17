@@ -47,11 +47,11 @@ Generated Artifacts Summary:
 {json.dumps(artifacts_summary, indent=2)[:4000]}
 
 Perform Output-Specific Validation Checks:
-1. Executive Brief: Check that executive summary and recommended actions accurately match the ICO without hallucinations.
-2. Security Advisory: Check that IoCs ({ico.threat_indicators if ico else []}) and CVEs match the ICO.
-3. Social Content: Check LinkedIn (< 3000 chars) and X/Twitter thread (< 280 chars per post) character constraints.
-4. Presentation Deck: Check slide titles and bullets align with ICO key findings.
-5. Infographic: Check visual metrics and CVSS severity match the ICO urgency ({state.urgency_level}).
+1. Executive Brief: Check that executive briefing and strategic recommendations accurately match the ICO without cross-domain hallucinations.
+2. Advisory: Check that indicators/metrics ({ico.threat_indicators if ico else []}) and affected systems match the ICO.
+3. Social Content: Check LinkedIn (< 3000 chars) and X/Twitter post (< 280 chars) character constraints and topic relevance.
+4. Presentation Deck: Check slide titles and bullets align with ICO key findings and contain concise bullets.
+5. Infographic: Check visual metrics and severity match the ICO urgency ({state.urgency_level}).
 6. Video Package: Check narration timing and scene storyboards.
 7. PII & Security: Verify no raw database credentials, system prompts, or unmasked secrets are exposed.
 

@@ -1,3 +1,4 @@
+import re
 from typing import Any, Dict, List
 from pydantic import BaseModel, Field
 from app.models.llm import llm_service
@@ -17,53 +18,67 @@ class SocialOutput(BaseModel):
 class SocialAgent:
     def run(self, state: TransformationState) -> Dict[str, Any]:
         ctx = state.central_context
-        topic = ctx.core_topic if ctx and ctx.core_topic else "Cybersecurity Alert"
-        summary = ctx.executive_summary if ctx and ctx.executive_summary else "Security breach incident under investigation."
+        topic = ctx.core_topic if ctx and ctx.core_topic else "Operational Update"
+        summary = ctx.executive_summary if ctx and ctx.executive_summary else "Status report and operational update."
         severity = ctx.severity if ctx and ctx.severity else ctx.urgency_level.upper() if ctx else "HIGH"
 
         prompt = f"""
-You are the Cybersecurity Social Content Specialist.
-Generate audience-tailored social media communications based on the Central Context.
+You are the Strategic Communications & Social Media Specialist for Nexora AI.
+Generate audience-tailored, professional social media communications grounded strictly in the Central Context.
 
 Central Context:
 Core Topic: {topic}
 Executive Summary: {summary}
-Severity: {severity}
+Assessed Urgency: {severity}
 
-Generate:
-1. LinkedIn Post: Engaging, professional cybersecurity post formatted with clear sections and linebreaks (Under 3000 chars).
-2. Twitter/X Thread: Concise, impact-driven thread (Under 280 characters).
-Include relevant hashtags (e.g., #CyberSecurity #InfoSec #ThreatIntel).
+Deliverables:
+1. LinkedIn Post: Engaging, high-credibility professional post with structured sections, clear key takeaways, and relevant contextual hashtags (Under 2500 chars).
+2. X / Twitter Post: Punchy, urgent, informative broadcast under 280 characters with 2-3 relevant topic-specific hashtags.
+CRITICAL: Only use hashtags directly relevant to {topic}. Do NOT use unrelated hashtags.
 """
         result = llm_service.generate_json(
             prompt=prompt,
             schema_class=SocialOutput,
-            system_prompt="You create viral, high-authority cybersecurity posts for social media.",
+            system_prompt="You create professional, high-authority social media communications accurately tailored to the specific domain of the report.",
             use_fast_model=True
         )
         out = result.model_dump()
 
+        # Generate topic-derived dynamic hashtags
+        words = re.findall(r'[A-Za-z0-9]+', topic)
+        dynamic_tags = [f"#{w.capitalize()}" for w in words if len(w) > 3][:3]
+        if not dynamic_tags:
+            dynamic_tags = ["#OperationalUpdate", "#LeadershipBrief"]
+
         if not out.get("linkedin") or not out["linkedin"].get("content"):
-            is_flood = any(k in (topic + " " + summary).lower() for k in ["flood", "rain", "monsoon", "disaster", "water"])
-            hashtags = ["#UrbanFlooding", "#Navapur", "#EmergencyResponse", "#PublicSafety"] if is_flood else ["#IncidentUpdate", "#PublicSafety", "#EmergencyResponse"]
-            li_text = f"🚨 INCIDENT UPDATE: {topic}\n\nSummary:\n{summary}\n\nUrgency Level: {severity}\n\nKey Response Measures:\n- Emergency services and monitoring units activated.\n- Verified safety updates will be published regularly."
+            li_tags = dynamic_tags + ["#OperationalUpdate", "#IndustryInsights"]
+            li_text = (
+                f"📢 OFFICIAL UPDATE: {topic}\n\n"
+                f"Summary Overview:\n{summary}\n\n"
+                f"Priority Classification: {severity}\n\n"
+                f"Key Takeaways:\n"
+                f"• Active response and mitigation measures are underway.\n"
+                f"• Cross-functional teams are coordinating to ensure continuity.\n"
+                f"• Verified updates will continue to be shared through authorized channels.\n\n"
+                f"{' '.join(li_tags)}"
+            )
             out["linkedin"] = {
                 "platform": "linkedin",
                 "content": li_text,
                 "character_count": len(li_text),
-                "hashtags": hashtags,
+                "hashtags": li_tags,
                 "references": []
             }
 
         if not out.get("twitter") or not out["twitter"].get("content"):
-            is_flood = any(k in (topic + " " + summary).lower() for k in ["flood", "rain", "monsoon", "disaster", "water"])
-            tags = "#UrbanFlooding #Navapur #EmergencyUpdate" if is_flood else "#IncidentUpdate #PublicSafety"
-            tw_text = f"⚠️ UPDATE: {topic}. Severity: {severity}. {summary[:140]} {tags}"
+            tags_str = " ".join(dynamic_tags)
+            tw_summary = summary[:130] if summary else "Active monitoring and response measures underway."
+            tw_text = f"UPDATE: {topic} | Status: {severity}\n\n{tw_summary}\n\n{tags_str}"
             out["twitter"] = {
                 "platform": "twitter",
                 "content": tw_text,
                 "character_count": len(tw_text),
-                "hashtags": tags.split(),
+                "hashtags": dynamic_tags,
                 "references": []
             }
 

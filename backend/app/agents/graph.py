@@ -42,7 +42,7 @@ class TransformationGraphRunner:
             update_progress("context_agent", "running")
             ico = context_agent.run(state)
             state.central_context = ico
-            active_intent = ico.user_intent or ico.detected_intent or "security_alert"
+            active_intent = ico.user_intent or ico.detected_intent or "general_report"
             update_progress("context_agent", "completed", {
                 "core_topic": ico.core_topic,
                 "detected_intent": ico.detected_intent,
@@ -54,8 +54,14 @@ class TransformationGraphRunner:
             # Stage 3: RAG Knowledge Base Enrichment
             update_progress("rag_retriever", "running")
             try:
-                query = f"{ico.core_topic} {' '.join(ico.entities[:3])} {' '.join(ico.threat_indicators[:3])}"
-                passages = rag_retriever.retrieve(query=query, top_k=3, project_id=state.project_id)
+                # Isolate RAG query strictly to current source documents to prevent cross-run pollution
+                query = f"{ico.core_topic} {' '.join(ico.entities[:3])}"
+                passages = rag_retriever.retrieve(
+                    query=query,
+                    top_k=3,
+                    project_id=state.project_id,
+                    document_ids=state.source_document_ids if state.source_document_ids else None
+                )
                 state.rag_passages = passages
                 if ico:
                     ico.retrieved_knowledge = passages
@@ -121,20 +127,10 @@ class TransformationGraphRunner:
             return state
 
     def _determine_agent_routes(self, intent: str, requested_formats: List[str]) -> List[str]:
-        # Intelligent routing maps cybersecurity intent to recommended formats
-        intent_routes = {
-            "incident_report": ["executive_brief", "advisory", "social", "presentation", "infographic", "video"],
-            "vulnerability_advisory": ["advisory", "executive_brief", "presentation", "infographic"],
-            "threat_intelligence": ["social", "executive_brief", "infographic", "presentation"],
-            "malware_analysis": ["advisory", "infographic", "video"],
-            "security_alert": ["advisory", "executive_brief", "social"],
-            "risk_assessment": ["executive_brief", "presentation", "infographic"],
-            "policy_update": ["executive_brief", "presentation"]
-        }
-        recommended = intent_routes.get(intent, ["executive_brief", "advisory", "social", "presentation", "infographic", "video"])
-        # Intersection with user requested formats (ensure requested formats are honored)
-        final_routes = list(set(recommended).intersection(set(requested_formats))) if requested_formats else recommended
-        return final_routes if final_routes else requested_formats
+        all_formats = ["executive_brief", "advisory", "social", "presentation", "infographic", "video"]
+        if requested_formats:
+            return [fmt for fmt in all_formats if fmt in requested_formats]
+        return all_formats
 
     def _render_artifacts(self, state: TransformationState):
         prefix = f"trans_{state.transformation_id[:8]}"
@@ -148,7 +144,8 @@ class TransformationGraphRunner:
         # Presentation PPTX
         if state.presentation:
             pptx_path = storage_manager.get_path("presentations", f"{prefix}_presentation.pptx")
-            rendered = pptx_renderer.render_presentation(state.presentation.get("slides", []), pptx_path)
+            p_title = state.presentation.get("title") or (state.central_context.core_topic if state.central_context else "Executive Presentation")
+            rendered = pptx_renderer.render_presentation(state.presentation.get("slides", []), pptx_path, presentation_title=p_title)
             state.rendered_files["presentation"] = rendered
 
         # Infographic SVG / Data

@@ -18,7 +18,8 @@ class EmbeddingsService:
             client = genai.Client(api_key=key, http_options={"timeout": 5000})
             result = client.models.embed_content(
                 model="gemini-embedding-001",
-                contents=text
+                contents=text,
+                config={"output_dimensionality": 384}
             )
             if hasattr(result, "embeddings") and result.embeddings:
                 return result.embeddings[0].values
