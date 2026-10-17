@@ -48,18 +48,18 @@ Generate 3 to 5 concise scenes (duration 5-10s each).
                 {
                     "scene_number": 1,
                     "duration": 8.0,
-                    "visual_recommendation": "Cybersecurity SOC monitoring room with red warning indicators",
-                    "voiceover_text": f"Critical security alert: {topic} confirmed. Severity: {severity}.",
-                    "subtitle_text": f"ALERT: {topic}",
-                    "image_prompt": "Dark cybersecurity control room, futuristic UI, alert dialog"
+                    "visual_recommendation": f"Incident monitoring center assessing {topic}",
+                    "voiceover_text": f"Emergency briefing: {topic} reported. Urgency level: {severity}.",
+                    "subtitle_text": f"UPDATE: {topic}",
+                    "image_prompt": f"Municipal operations command center, digital map displays showing {topic}"
                 },
                 {
                     "scene_number": 2,
                     "duration": 10.0,
-                    "visual_recommendation": "Network topology showing isolated domain controller",
-                    "voiceover_text": summary if summary else "Immediate containment protocols engaged across affected infrastructure.",
-                    "subtitle_text": "CONTAINMENT IN PROGRESS",
-                    "image_prompt": "Abstract digital network map, glowing nodes, red threat alert"
+                    "visual_recommendation": "Field response units and operational monitoring active across impacted sectors",
+                    "voiceover_text": summary[:180] if summary else "Immediate response and relief measures deployed across affected areas.",
+                    "subtitle_text": "OPERATIONAL RESPONSE ENGAGED",
+                    "image_prompt": "Emergency response teams, municipal vehicles, situational overview map"
                 }
             ]
 

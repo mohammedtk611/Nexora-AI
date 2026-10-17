@@ -53,19 +53,19 @@ Recommended Actions: {recs}
         if not out.get("core_topic"):
             out["core_topic"] = topic
         if not out.get("impact_summary"):
-            out["impact_summary"] = f"Visual threat analysis for {topic} affecting {', '.join(affected) if affected else 'core infrastructure'}."
+            out["impact_summary"] = f"Visual operational analysis for {topic} affecting {', '.join(affected) if affected else 'operational zones'}."
         if not out.get("metrics") or len(out["metrics"]) == 0:
             out["metrics"] = [
-                {"label": "Threat Level", "value": severity, "description": "Assessed incident risk level"},
-                {"label": "Affected Systems", "value": str(len(affected)) if affected else "1", "description": "Isolated infrastructure nodes"},
-                {"label": "Indicators Found", "value": str(len(indicators)) if indicators else "2", "description": "Verified IOC hashes and IPs"}
+                {"label": "Urgency Level", "value": severity, "description": "Assessed incident risk level"},
+                {"label": "Affected Sectors", "value": str(len(affected)) if affected else "Multiple", "description": "Identified impacted locations"},
+                {"label": "Response Actions", "value": str(len(recs)) if recs else "Active", "description": "Remediation and relief measures"}
             ]
         if not out.get("indicators"):
-            out["indicators"] = indicators if indicators else ["198.51.100.45", "INC-2026-8894"]
+            out["indicators"] = indicators if indicators else (affected if affected else ["Primary Operational Sector"])
         if not out.get("affected_systems"):
-            out["affected_systems"] = affected if affected else ["Domain Controller"]
+            out["affected_systems"] = affected if affected else ["Municipal / Sector Infrastructure"]
         if not out.get("mitigation_flow"):
-            out["mitigation_flow"] = recs if recs else ["Isolate Host", "Block Malicious IP", "Rotate Keys"]
+            out["mitigation_flow"] = recs if recs else ["Deploy Field Teams", "Activate Relief Shelters", "Post-Incident Recovery"]
 
         return out
 

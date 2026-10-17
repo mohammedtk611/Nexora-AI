@@ -42,8 +42,31 @@ class LLMService:
             cleaned = cleaned[:-3]
         cleaned = cleaned.strip()
 
+        def _normalize_dict(d: Any) -> Any:
+            if isinstance(d, dict):
+                normalized = dict(d)
+                for k in ["timeline", "key_findings", "threat_indicators", "affected_systems", "recommended_actions", "entities", "bullets", "mitigation_steps", "immediate_decisions"]:
+                    if k in normalized and isinstance(normalized[k], list):
+                        norm_list = []
+                        for item in normalized[k]:
+                            if isinstance(item, dict):
+                                t = item.get("time", item.get("timestamp", ""))
+                                desc = item.get("event", item.get("description", item.get("name", item.get("action", ""))))
+                                if t and desc:
+                                    norm_list.append(f"{t} - {desc}")
+                                elif desc:
+                                    norm_list.append(str(desc))
+                                else:
+                                    norm_list.append(" ".join(str(v) for v in item.values()))
+                            else:
+                                norm_list.append(str(item))
+                        normalized[k] = norm_list
+                return normalized
+            return d
+
         try:
             parsed_dict = json.loads(cleaned)
+            parsed_dict = _normalize_dict(parsed_dict)
             return schema_class.model_validate(parsed_dict)
         except Exception as e:
             logger.warning(f"Failed to parse LLM JSON directly: {e}. Raw output: {cleaned[:200]}")
@@ -55,6 +78,7 @@ class LLMService:
                 if start != -1 and end != -1:
                     sub_str = cleaned[start:end+1]
                     parsed_dict = json.loads(sub_str)
+                    parsed_dict = _normalize_dict(parsed_dict)
                     return schema_class.model_validate(parsed_dict)
             except Exception:
                 pass
@@ -98,7 +122,15 @@ class LLMService:
             logger.info("Gemini API key not configured, falling back to simulated output.")
             return self._simulated_response(prompt, system_prompt)
 
-        candidates = ["gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-flash-latest", "gemini-3.8-flash"]
+        candidates = [
+            "gemini-3.8-flash",
+            "gemini-3.7-flash",
+            "gemini-flash-latest",
+            "gemini-3.6-flash"
+        ]
+        if primary_model and primary_model in candidates:
+            candidates.remove(primary_model)
+            candidates.insert(0, primary_model)
 
         seen = set()
         model_list = [m for m in candidates if m and not (m in seen or seen.add(m))]
@@ -110,29 +142,14 @@ class LLMService:
             if system_prompt:
                 config["system_instruction"] = system_prompt
 
-            try:
-                from google import genai
-                client = genai.Client(api_key=key)
-                response = client.models.generate_content(
-                    model=target_model,
-                    contents=prompt,
-                    config=config if config else None
-                )
-                return response.text or ""
-            except Exception as e:
-                err_str = str(e).lower()
-                # Fast-fail if quota exhausted, overloaded, or not found so we immediately try the next model
-                if "429" in err_str or "quota" in err_str or "503" in err_str or "404" in err_str or "unavailable" in err_str:
-                    raise e
-                import google.generativeai as genai
-                genai.configure(api_key=key)
-                model = genai.GenerativeModel(
-                    model_name=target_model,
-                    system_instruction=system_prompt
-                )
-                gen_config = {"response_mime_type": "application/json"} if json_mode else None
-                response = model.generate_content(prompt, generation_config=gen_config)
-                return response.text or ""
+            from google import genai
+            client = genai.Client(api_key=key, http_options={"timeout": 30000})
+            response = client.models.generate_content(
+                model=target_model,
+                contents=prompt,
+                config=config if config else None
+            )
+            return response.text or ""
 
         last_error = None
         for m in model_list:
@@ -146,8 +163,6 @@ class LLMService:
 
         logger.error(f"All Gemini candidate models failed. Last error: {last_error}")
         return self._simulated_response(prompt, system_prompt)
-
-
 
     def _call_ollama(self, prompt: str, system_prompt: Optional[str] = None) -> str:
         try:
@@ -171,13 +186,18 @@ class LLMService:
             return self._simulated_response(prompt, system_prompt)
 
     def _simulated_response(self, prompt: str, system_prompt: Optional[str] = None) -> str:
-        # Fallback text when API key is not present or offline
-        return (
-            "Cybersecurity Intelligence Summary:\n"
-            "- Critical threat indicators identified across endpoint and network vector logs.\n"
-            "- Affected systems: Domain Controllers, Primary Gateway, Exchange Server.\n"
-            "- Urgency Level: HIGH\n"
-            "- Recommended Action: Isolate compromised nodes, rotate active credentials, apply immediate security patch."
-        )
+        # Dynamic grounded fallback strictly derived from prompt content
+        lines = [line.strip() for line in prompt.splitlines() if line.strip() and not line.strip().startswith("{") and not line.strip().startswith('"')]
+        topic = "Incident Report Analysis"
+        summary_sentences = []
+        for line in lines:
+            if any(k in line.lower() for k in ["incident", "report", "flooding", "waterlogging", "advisory", "storm", "emergency"]):
+                if len(line) < 100 and not topic.endswith(line):
+                    topic = line
+            elif len(line) > 35 and len(summary_sentences) < 3:
+                summary_sentences.append(line)
+
+        summary = " ".join(summary_sentences) if summary_sentences else "Incident assessment completed based on source reports."
+        return f"{topic}\n\nSummary:\n{summary}\n\nKey Observations:\n- Continuous monitoring and emergency operations active across identified areas."
 
 llm_service = LLMService()

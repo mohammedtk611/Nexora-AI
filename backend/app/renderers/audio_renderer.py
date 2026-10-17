@@ -9,7 +9,7 @@ class AudioRenderer:
             import edge_tts
             async def _generate():
                 communicate = edge_tts.Communicate(text, voice)
-                await communicate.save(output_mp3_path)
+                await asyncio.wait_for(communicate.save(output_mp3_path), timeout=5.0)
 
             try:
                 loop = asyncio.get_event_loop()

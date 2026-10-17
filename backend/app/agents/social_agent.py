@@ -44,22 +44,26 @@ Include relevant hashtags (e.g., #CyberSecurity #InfoSec #ThreatIntel).
         out = result.model_dump()
 
         if not out.get("linkedin") or not out["linkedin"].get("content"):
-            li_text = f"🚨 CYBER THREAT ALERT: {topic}\n\nAnalyst Summary:\n{summary}\n\nUrgency Level: {severity}\n\nRecommended Action: Apply defensive mitigations immediately."
+            is_flood = any(k in (topic + " " + summary).lower() for k in ["flood", "rain", "monsoon", "disaster", "water"])
+            hashtags = ["#UrbanFlooding", "#Navapur", "#EmergencyResponse", "#PublicSafety"] if is_flood else ["#IncidentUpdate", "#PublicSafety", "#EmergencyResponse"]
+            li_text = f"🚨 INCIDENT UPDATE: {topic}\n\nSummary:\n{summary}\n\nUrgency Level: {severity}\n\nKey Response Measures:\n- Emergency services and monitoring units activated.\n- Verified safety updates will be published regularly."
             out["linkedin"] = {
                 "platform": "linkedin",
                 "content": li_text,
                 "character_count": len(li_text),
-                "hashtags": ["#CyberSecurity", "#InfoSec", "#ThreatIntel"],
+                "hashtags": hashtags,
                 "references": []
             }
 
         if not out.get("twitter") or not out["twitter"].get("content"):
-            tw_text = f"⚠️ THREAT ALERT: {topic}. Severity: {severity}. {summary[:120]} #CyberSecurity #InfoSec"
+            is_flood = any(k in (topic + " " + summary).lower() for k in ["flood", "rain", "monsoon", "disaster", "water"])
+            tags = "#UrbanFlooding #Navapur #EmergencyUpdate" if is_flood else "#IncidentUpdate #PublicSafety"
+            tw_text = f"⚠️ UPDATE: {topic}. Severity: {severity}. {summary[:140]} {tags}"
             out["twitter"] = {
                 "platform": "twitter",
                 "content": tw_text,
                 "character_count": len(tw_text),
-                "hashtags": ["#CyberSecurity", "#InfoSec"],
+                "hashtags": tags.split(),
                 "references": []
             }
 

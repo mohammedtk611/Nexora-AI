@@ -70,36 +70,37 @@ REQUIRED FIELDS (Do not leave any field empty):
         if not output_dict.get("executive_summary"):
             output_dict["executive_summary"] = (
                 exec_summary_ctx or
-                f"A {severity} severity cybersecurity incident ({core_topic}) was identified. "
-                f"Impacted infrastructure: {', '.join(affected) if affected else 'Perimeter gateway'}. "
-                f"Threat indicators detected: {', '.join(indicators[:3]) if indicators else 'Anomalous network vectors'}. "
-                f"Incident response protocols are active to contain threat scope."
+                f"A {severity} urgency incident ({core_topic}) was identified. "
+                f"Impacted areas and systems: {', '.join(affected) if affected else 'operational zones'}. "
+                f"Incident response protocols are active to contain the situation."
             )
 
         if not output_dict.get("business_impact"):
             output_dict["business_impact"] = (
-                f"Risk of unauthorized access and operational disruption across {', '.join(affected) if affected else 'critical systems'}. "
-                f"Primary vectors involve {', '.join(indicators[:2]) if indicators else 'unauthorized access attempts'}."
+                ctx.business_impact if ctx and ctx.business_impact else
+                f"Operational impact observed across {', '.join(affected) if affected else 'monitored sectors'}."
             )
 
         if not output_dict.get("operational_risk"):
             output_dict["operational_risk"] = (
-                f"Compromise of enterprise identity or endpoint assets could enable lateral movement. "
-                f"Current containment status requires mandatory host isolation and token revocation."
+                ctx.operational_risk if ctx and ctx.operational_risk else
+                f"Operational and safety risks identified in {', '.join(affected[:2]) if affected else 'affected areas'}; active mitigations required."
             )
 
         if not output_dict.get("immediate_decisions"):
             output_dict["immediate_decisions"] = [
-                "Authorize emergency network isolation for impacted nodes",
-                "Approve credential reset for privileged accounts",
-                "Trigger third-party incident response audit"
+                f"Approve emergency resource deployment: {r}" for r in recommendations[:3]
+            ] if recommendations else [
+                "Authorize emergency operational response",
+                "Deploy priority resources to affected zones",
+                "Establish unified public communications channel"
             ]
 
         if not output_dict.get("recommended_actions"):
             output_dict["recommended_actions"] = recommendations if recommendations else [
-                "Isolate compromised endpoints from enterprise network",
-                "Block malicious IP indicators on edge firewalls",
-                "Conduct full forensics scan across Active Directory controllers"
+                "Deploy emergency pumping and field response teams",
+                "Activate temporary relief accommodation for relocated residents",
+                "Conduct infrastructure and drainage assessment"
             ]
 
         return output_dict

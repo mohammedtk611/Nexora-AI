@@ -25,26 +25,26 @@ class FactConflict(BaseModel):
 class ICOSchema(BaseModel):
     version: int = 1
     status: str = "draft"  # draft, review, approved
-    detected_intent: str = "security_alert"  # incident_report, vulnerability_advisory, threat_intelligence, malware_analysis, security_alert, risk_assessment, policy_update
+    detected_intent: str = "incident_report"  # incident_report, disaster_management, vulnerability_advisory, etc.
     user_intent: Optional[str] = None
     
     # Core Extraction Fields
     core_topic: str = ""
     executive_summary: str = ""
-    key_findings: List[str] = []
-    key_facts: List[str] = []
-    entities: List[str] = []
-    threat_indicators: List[str] = []
-    affected_systems: List[str] = []
-    timeline: List[str] = []
-    technical_details: List[str] = []
+    key_findings: List[Any] = []
+    key_facts: List[Any] = []
+    entities: List[Any] = []
+    threat_indicators: List[Any] = []
+    affected_systems: List[Any] = []
+    timeline: List[Any] = []
+    technical_details: List[Any] = []
     urgency_level: str = "high"  # critical, high, medium, low
     severity: str = "HIGH"
     business_impact: str = ""
     operational_risk: str = ""
-    recommended_actions: List[str] = []
-    recommendations: List[str] = []
-    references: List[str] = []
+    recommended_actions: List[Any] = []
+    recommendations: List[Any] = []
+    references: List[Any] = []
     
     # Provenance & RAG Knowledge
     provenance: List[ProvenanceItem] = []

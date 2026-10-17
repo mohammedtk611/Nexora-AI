@@ -47,20 +47,20 @@ Recommended Actions: {recs}
                 {
                     "slide_number": 1,
                     "title": f"Incident Overview: {topic}",
-                    "bullets": [summary if summary else "Active security incident breach investigation", f"Impacted systems: {', '.join(affected) if affected else 'Perimeter gateway'}"],
-                    "speaker_notes": "Introduce incident severity and affected operational scope to leadership."
+                    "bullets": [summary if summary else f"Operational incident report for {topic}", f"Impacted areas: {', '.join(affected) if affected else 'Monitored sectors'}"],
+                    "speaker_notes": "Introduce incident severity, timeline, and affected operational scope to leadership."
                 },
                 {
                     "slide_number": 2,
-                    "title": "Indicators of Compromise (IoCs)",
-                    "bullets": [f"Detected indicator: {ioc}" for ioc in (indicators[:3] if indicators else ["198.51.100.45", "INC-2026-8894"])],
-                    "speaker_notes": "Review technical indicators identified across firewall and endpoint logs."
+                    "title": "Affected Zones & Key Observations",
+                    "bullets": [f"Affected area / indicator: {ind}" for ind in (indicators[:4] if indicators else (affected[:4] if affected else ["Municipal sectors"]))],
+                    "speaker_notes": "Review operational impacts and field assessments across impacted locations."
                 },
                 {
                     "slide_number": 3,
-                    "title": "Recommended Remediation & Actions",
-                    "bullets": recs if recs else ["Isolate affected host nodes", "Reset administrative Kerberos keys"],
-                    "speaker_notes": "Highlight immediate decision items requiring authorization."
+                    "title": "Action Plan & Next Steps",
+                    "bullets": recs if recs else ["Deploy emergency response and pumping units", "Maintain relief shelter operations", "Execute post-incident infrastructure study"],
+                    "speaker_notes": "Highlight immediate decision items and emergency remediation protocols."
                 }
             ]
 

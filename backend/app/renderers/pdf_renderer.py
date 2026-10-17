@@ -32,12 +32,12 @@ ADVISORY_HTML_TEMPLATE = """
     </div>
 
     <div class="section">
-        <div class="section-title">Threat Overview</div>
+        <div class="section-title">Incident & Situation Overview</div>
         <p>{{ threat_overview }}</p>
     </div>
 
     <div class="section">
-        <div class="section-title">Affected Systems</div>
+        <div class="section-title">Impacted Sectors & Infrastructure</div>
         <ul>
             {% for item in affected_systems %}
             <li>{{ item }}</li>
@@ -46,7 +46,7 @@ ADVISORY_HTML_TEMPLATE = """
     </div>
 
     <div class="section">
-        <div class="section-title">Indicators of Compromise (IoCs)</div>
+        <div class="section-title">Key Indicators & Identified Zones</div>
         <div class="code-block">
 {% for indicator in indicators %}
 {{ indicator }}
@@ -55,7 +55,7 @@ ADVISORY_HTML_TEMPLATE = """
     </div>
 
     <div class="section">
-        <div class="section-title">Recommended Mitigation Steps</div>
+        <div class="section-title">Recommended Action Steps</div>
         <ol>
             {% for step in mitigation_steps %}
             <li><strong>{{ step }}</strong></li>

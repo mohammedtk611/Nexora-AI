@@ -6,7 +6,7 @@ from app.core.config import settings
 logger = logging.getLogger("nexora_ai.embeddings")
 
 class EmbeddingsService:
-    def __init__(self, model_name: str = "text-embedding-004"):
+    def __init__(self, model_name: str = "gemini-embedding-001"):
         self.model_name = model_name
 
     def _embed_gemini(self, text: str) -> Optional[List[float]]:
@@ -15,25 +15,15 @@ class EmbeddingsService:
             return None
         try:
             from google import genai
-            client = genai.Client(api_key=key)
+            client = genai.Client(api_key=key, http_options={"timeout": 5000})
             result = client.models.embed_content(
-                model="text-embedding-004",
+                model="gemini-embedding-001",
                 contents=text
             )
             if hasattr(result, "embeddings") and result.embeddings:
                 return result.embeddings[0].values
-        except Exception:
-            try:
-                import google.generativeai as genai
-                genai.configure(api_key=key)
-                res = genai.embed_content(
-                    model="models/text-embedding-004",
-                    content=text
-                )
-                if "embedding" in res:
-                    return res["embedding"]
-            except Exception as e:
-                logger.warning(f"Gemini embedding API call failed: {e}")
+        except Exception as e:
+            logger.debug(f"Gemini embedding API call failed: {e}")
         return None
 
     def embed_text(self, text: str) -> List[float]:

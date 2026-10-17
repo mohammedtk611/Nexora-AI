@@ -18,8 +18,8 @@ class Settings(BaseSettings):
     # LLM Settings
     LLM_PROVIDER: str = "gemini"  # gemini or ollama
     GEMINI_API_KEY: Optional[str] = Field(default=None)
-    GEMINI_MODEL: str = "gemini-3.5-flash"
-    GEMINI_FAST_MODEL: str = "gemini-3.5-flash"
+    GEMINI_MODEL: str = "gemini-3.8-flash"
+    GEMINI_FAST_MODEL: str = "gemini-3.8-flash"
 
 
     OLLAMA_BASE_URL: str = "http://localhost:11434"
